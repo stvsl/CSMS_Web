@@ -5,7 +5,7 @@ import BottomBar from './components/BottomBar.vue'
 
 <template>
   <TopBar></TopBar>
-  <div class="c2"></div>
+  <router-view></router-view>
   <BottomBar></BottomBar>
 </template>
 
@@ -14,9 +14,9 @@ import BottomBar from './components/BottomBar.vue'
   height: 60px;
   background-color: blue;
 }
-.c2{
-  height: 80%;
+
+.c2 {
+  height: 80vh;
   background-color: rgb(255, 255, 255);
 }
-
 </style>

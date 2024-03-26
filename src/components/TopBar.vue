@@ -34,7 +34,7 @@
   color: #333;
   font-size: 24px;
   text-align: left;
-  margin-left: 20px;
+  margin-left: 100px;
 }
 
 .search {

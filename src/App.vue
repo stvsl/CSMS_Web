@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import TopBar from './components/TopBar.vue'
+import BottomBar from './components/BottomBar.vue'
 </script>
 
 <template>
   <TopBar></TopBar>
   <div class="c2"></div>
-  <footer class="foot">
-  </footer>
+  <BottomBar></BottomBar>
 </template>
 
 <style scoped>
@@ -14,4 +14,9 @@ import TopBar from './components/TopBar.vue'
   height: 60px;
   background-color: blue;
 }
+.c2{
+  height: 80%;
+  background-color: rgb(255, 255, 255);
+}
+
 </style>

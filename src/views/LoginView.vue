@@ -1,17 +1,12 @@
 <template>
-  <div class="body">
-    <div class="main">
-      <h1 class="title">登录界面</h1>
-      <div class="form-group">
-        <label for="username">用户名:</label>
-        <input type="text" id="username" required>
-      </div>
-      <div class="form-group">
-        <label for="password">密码:</label>
-        <input type="password" id="password" required>
-      </div>
-      <button type="submit" class="btn btn-primary">登录</button>
-
+  <div class="panel">
+    <div class="left">
+      <h1>
+        社区服务系统
+      </h1>
+    </div>
+    <div class="right">
+      <div class="loginpanel"></div>
     </div>
   </div>
 </template>
@@ -21,90 +16,33 @@
 </script>
 
 <style scoped>
-*,
-*::after,
-*::before {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  user-select: none;
+.panel {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
 }
 
-.body {
-  width: 100%;
-  height: 100vh;
-  display: flex;
+.left {
+  flex-grow: 3;
   justify-content: center;
   align-items: center;
-  font-family: "Montserrat", sans-serif;
-  font-size: 40px;
-  background-color: #d6e1e1;
-  color: #56ae9d;
-  text-shadow: 0 8px 10px #a1dbe7;
-
+  color: grey;
+  display: flex;
+  flex-flow: column;
 }
 
-.main {
-  position: relative;
-  width: 1250px;
-  min-width: 1250px;
-  min-height: 600px;
-  height: 600px;
-  padding: 25px;
-  background-color: #ecf0f3;
-  box-shadow: 10px 10px 10px #d1d9e6, -10px -10px 10px #f9f9f9;
-  border-radius: 20px;
-  overflow: hidden;
+.right {
+  flex-grow: 1;
+  background-color: rgb(210, 255, 242);
+  display: flex;
 }
 
-@media (max-width: 1200px) {
-  .main {
-    transform: scale(0.7);
-  }
-}
-
-@media (max-width: 1000px) {
-  .main {
-    transform: scale(0.6);
-  }
-}
-
-@media (max-width: 800px) {
-  .main {
-    transform: scale(0.5);
-  }
-}
-
-@media (max-width: 600px) {
-  .main {
-    transform: scale(0.4);
-  }
-}
-
-
-
-.form-group {
-  margin-bottom: 1rem;
-  font-size: 50px;
-  font-weight: bold;
-  text-align: center;
-
-
-}
-
-.btn-primary {
-  background-color: #6bc4e1;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
-
-/* 在Login.vue的<style>标签内添加 */
-.btn-primary:hover {
-  background-color: #89b4e1;
-  /* 更深的蓝色 */
-  transition: background-color 0.3s ease;
-  /* 平滑的过渡效果 */
+.loginpanel {
+  width: 400px;
+  height: 500px;
+  background-color: rgba(255, 255, 255, 0.31);
+  margin: auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 </style>

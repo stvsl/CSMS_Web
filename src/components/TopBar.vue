@@ -5,10 +5,10 @@
       <input type="search" placeholder="搜索一下">
     </div>
     <div class="btns">
-      <button>信息</button>
-      <button>活动</button>
-      <button>反馈</button>
-      <button>登录</button>
+      <RouterLink class="button" to="/login">信息</RouterLink>
+      <RouterLink class="button" to="/login">活动</RouterLink>
+      <RouterLink class="button" to="/login">反馈</RouterLink>
+      <RouterLink class="button" to="/login">登录</RouterLink>
     </div>
   </div>
 </template>
@@ -76,16 +76,12 @@
   gap: 10px;
 }
 
-.btns button {
-  height: 80%;
-  border: none;
+.btns .button {
   margin: auto 0;
+  text-align: center;
   font-size: 18px;
   padding: 0 10px;
-  background-color: rgba(0, 0, 0, 0);
-}
-
-.btns button:focus {
-  outline: none;
+  color: #000;
+  line-height: 100%;
 }
 </style>

@@ -29,6 +29,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus'
 
 const router = useRouter();
 const loginfail = ref(false);
@@ -57,9 +58,14 @@ const handleLogin = () => {
       const res = JSON.parse(result) as { code: string };
       if (res.code == "200") {
         loginfail.value = false;
+        ElMessage({
+          message: '登录成功',
+          type: 'success',
+        })
         // TODO 保存登录状态
         router.push("/");
       } else {
+        ElMessage.error("登录失败");
         loginfail.value = true;
       }
     })
@@ -93,7 +99,7 @@ const handleLogin = () => {
 
 .loginpanel {
   width: 60%;
-  height: 50%;
+  height: 40%;
   background-color: rgba(255, 255, 255, 0.85);
   margin: auto;
   border-radius: 15px;

@@ -10,7 +10,11 @@ const routes = [
     path: "/register",
     name: "RegisterView",
     component: () => import("../views/RegisterView.vue"),
-  },
+  }, {
+    path: "/main",
+    name: "Main",
+    component: () => import("../views/Main.vue"),
+  }
 ];
 
 const router = createRouter({

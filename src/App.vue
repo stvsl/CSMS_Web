@@ -3,23 +3,36 @@ import { ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import TopBar from './components/TopBar.vue'
 import BottomBar from './components/BottomBar.vue'
+import AdminMenu from './components/AdminMenu.vue'
 
-const showbar = ref(true);
+const showtop = ref(true);
+const showbottom = ref(true);
+const showaside = ref(true);
 const route = useRoute();
 
 watch(() => route.path, (newPath) => {
   if (newPath === '/login' || newPath == "/register") {
-    showbar.value = false;
+    showtop.value = false;
+    showbottom.value = false;
+    showaside.value = false;
   } else {
-    showbar.value = true;
+    showtop.value = true;
+    showbottom.value = true;
+    showaside.value = true;
   }
 });
 </script>
 
 <template>
-  <TopBar v-if="showbar"></TopBar>
-  <router-view></router-view>
-  <BottomBar v-if="showbar"></BottomBar>
+  <TopBar v-if="showtop"></TopBar>
+  <el-container>
+    <el-aside v-if="showaside" width="300px" height="100%">
+      <AdminMenu></AdminMenu>
+    </el-aside>
+    <router-view></router-view>
+  </el-container>
+  <BottomBar v-if="showbottom"></BottomBar>
+  <el-backtop :right="100" :bottom="160" />
 </template>
 
 <style scoped>
@@ -28,8 +41,7 @@ watch(() => route.path, (newPath) => {
   background-color: blue;
 }
 
-.c2 {
-  height: 80vh;
-  background-color: rgb(255, 255, 255);
+.el-container {
+  height: 100vh;
 }
 </style>

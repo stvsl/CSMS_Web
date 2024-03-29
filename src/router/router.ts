@@ -10,17 +10,22 @@ const routes = [
     path: "/register",
     name: "RegisterView",
     component: () => import("../views/RegisterView.vue"),
-  }, {
-    path: "/main",
-    name: "Main",
-    component: () => import("../views/Main.vue"),
-  }
+  },
+  {
+    path: "/admin/overview",
+    name: "adminoverview",
+    component: () => import("../views/OverviewView.vue"),
+  },
+  {
+    path: "/admin/article",
+    name: "adminarticle",
+    component: () => import("../views/AdminArticle.vue"),
+  },
 ];
 
 const router = createRouter({
-  // 4. 内部提供了 history 模式的实现。为了简单起见，我们在这里使用 hash 模式。
   history: createWebHashHistory(),
-  routes, // `routes: routes` 的缩写
+  routes,
 });
 
 export default router;

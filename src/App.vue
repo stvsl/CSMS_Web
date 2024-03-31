@@ -42,6 +42,6 @@ watch(() => route.path, (newPath) => {
 }
 
 .el-container {
-  height: 100vh;
+  min-height: 100vh;
 }
 </style>

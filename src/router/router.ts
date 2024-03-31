@@ -21,6 +21,11 @@ const routes = [
     name: "adminarticle",
     component: () => import("../views/AdminArticle.vue"),
   },
+  {
+    path: "/admin/content",
+    name: "admincontent",
+    component: () => import("../views/ContentEditor.vue"),
+  },
 ];
 
 const router = createRouter({

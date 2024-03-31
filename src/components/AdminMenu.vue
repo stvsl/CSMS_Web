@@ -17,6 +17,7 @@
         </el-icon>
         <span>内容管理</span>
       </template>
+      <el-menu-item index="/admin/content">新建内容</el-menu-item>
       <el-menu-item index="/admin/article">文章管理</el-menu-item>
       <el-menu-item index="/admin/announcement">公告管理</el-menu-item>
     </el-sub-menu>

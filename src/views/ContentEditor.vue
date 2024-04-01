@@ -14,21 +14,17 @@
     </el-row>
     <el-row>
       <el-col :span="16" :offset="1">
-        <v-form-render :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef">
+        <v-form-render id="Form" :form-json="formJson" :form-data="formData" :option-data="optionData" ref="vFormRef">
         </v-form-render>
         <div style="border: 1px solid #ccc;margin-top: 6px">
-          <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" :defaultConfig="toolbarConfig"
-            :mode="mode" />
+          <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" :defaultConfig="toolbarConfig" />
           <Editor style="height: 500px; overflow-y: hidden;" v-model="valueHtml" :defaultConfig="editorConfig"
-            :mode="mode" @onCreated="handleCreated" />
+            @onCreated="handleCreated" />
         </div>
         <br />
         <el-button type="primary" @click="submitForm"><el-icon>
             <Upload />
-          </el-icon><span>&nbsp;发布</span></el-button>
-        <el-button type="danger" @click="submitForm"><el-icon>
-            <Delete />
-          </el-icon><span>&nbsp;删除</span></el-button>
+          </el-icon><span>&nbsp;保存并发布</span></el-button>
         <p />
         <a-space>
           <el-text class="mx-1">尊重他人： 社区是一个多样性和包容性的空间。请尊重他人的观点、观念和创作，避免使用攻击性、冒犯性或歧视性的言论。</el-text>
@@ -54,8 +50,7 @@
         <a-space>
           <el-text class="mx-1">享受创作： 创作是一种乐趣和享受。请尽情地展示你的创意和想法，与社区的其他成员分享你的作品和经验。</el-text>
         </a-space>
-        <div style="height: 100px">
-
+        <div style="height: 50px">
         </div>
       </el-col>
     </el-row>
@@ -73,21 +68,29 @@ const formJson = reactive({ "widgetList": [{ "key": 49902, "type": "grid", "cate
 const formData = reactive({})
 const optionData = reactive({})
 const vFormRef = ref(null)
+const clearDialogVisible = ref(false)
 
 const editorRef = shallowRef()
 
 // 内容 HTML
-const valueHtml = ref('<p>hello</p>')
+const valueHtml = ref('')
 
 // 模拟 ajax 异步获取内容
 onMounted(() => {
-  setTimeout(() => {
-    valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>'
-  }, 1500)
+  // valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>'
 })
 
-const toolbarConfig = {}
-const editorConfig = { placeholder: '请输入内容...' }
+const toolbarConfig = {
+  excludeKeys: ['insertVideo'],
+}
+const editorConfig = {                       // JS 语法
+  MENU_CONF: {},
+  placeholder: '请输入正文内容...'
+}
+editorConfig.MENU_CONF['uploadImage'] = {
+  server: 'http://127.0.0.1:6521/api/service/content/upload',
+  maxFileSize: 20 * 1024 * 1024, // 1M
+}
 
 // 组件销毁时，也及时销毁编辑器
 onBeforeUnmount(() => {
@@ -104,7 +107,32 @@ const handleCreated = (editor) => {
 const submitForm = () => {
   vFormRef.value.getFormData().then(formData => {
     // Form Validation OK
-    alert(JSON.stringify(formData))
+    var raw = JSON.stringify({
+      'data': formData, 'content': valueHtml.value
+    });
+    var myHeaders = new Headers();
+    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+    myHeaders.append("Content-Type", "application/json");
+
+    var requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:6521/api/content/upload", requestOptions)
+      .then(response => response.text())
+      .then(result => {
+        const res = JSON.parse(result)
+        if (res.code == 200) {
+          ElMessage.success('提交成功')
+        } else {
+          ElMessage.error('提交失败,请检查网络')
+        }
+      })
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
   }).catch(error => {
     // Form Validation failed
     ElMessage.error(error)

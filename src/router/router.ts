@@ -22,6 +22,11 @@ const routes = [
     component: () => import("../views/AdminArticle.vue"),
   },
   {
+    path: "/admin/announcement",
+    name: "adminanounce",
+    component: () => import("../views/AdminAnounce.vue"),
+  },
+  {
     path: "/admin/content",
     name: "admincontent",
     component: () => import("../views/ContentEditor.vue"),

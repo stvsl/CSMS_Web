@@ -9,24 +9,18 @@
         <template #extra>
             <div className="image-area">
                 <a-space direction="vertical">
-                    <a-space>
-                        <a-button status="success">
-                            <template #icon>
-                                <icon-eye />
-                            </template>查看</a-button>
-                    </a-space>
-                    <a-space>
-                        <a-button status="warning">
-                            <template #icon>
-                                <icon-edit />
-                            </template>修改</a-button>
-                    </a-space>
-                    <a-space>
-                        <a-button status="danger">
-                            <template #icon>
-                                <icon-delete />
-                            </template>删除</a-button>
-                    </a-space>
+                    <a-button status="success">
+                        <template #icon>
+                            <icon-eye />
+                        </template>查看</a-button>
+                    <a-button status="warning">
+                        <template #icon>
+                            <icon-edit />
+                        </template>修改</a-button>
+                    <a-button status="danger">
+                        <template #icon>
+                            <icon-delete />
+                        </template>删除</a-button>
                 </a-space>
             </div>
         </template>

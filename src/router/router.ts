@@ -1,3 +1,4 @@
+import component from "element-plus/es/components/tree-select/src/tree-select-option.mjs";
 import { createRouter, createWebHashHistory } from "vue-router";
 
 const routes = [
@@ -30,6 +31,36 @@ const routes = [
     path: "/admin/content",
     name: "admincontent",
     component: () => import("../views/ContentEditor.vue"),
+  },
+  {
+    path: "/admin/activity/create",
+    name: "adminactivitycreate",
+    component: () => import("../views/AdminActivityCreate.vue"),
+  },
+  {
+    path: "/admin/activity/edit/:id",
+    name: "adminactivityedit",
+    component: () => import("../views/AdminActivityEdit.vue"),
+  },
+  {
+    path: "/admin/activity/manage",
+    name: "adminactivitymanage",
+    component: () => import("../views/AdminActivityManage.vue"),
+  },
+  {
+    path: "/admin/feed",
+    name: "adminfeedmanage",
+    component: () => import("../views/AdminFeedManage.vue"),
+  },
+  {
+    path: "/admin/fix",
+    name: "adminfixmanage",
+    component: () => import("../views/AdminFixManage.vue"),
+  },
+  {
+    path: "/admin/feedixprocess",
+    name: "adminfeedixprocess",
+    component: () => import("../views/AdminFeedixProcess.vue"),
   },
 ];
 

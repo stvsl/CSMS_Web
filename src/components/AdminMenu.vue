@@ -38,6 +38,7 @@
         </el-icon>
         <span>反馈与报修</span>
       </template>
+      <el-menu-item index="/admin/feedixprocess">进度跟进</el-menu-item>
       <el-menu-item-group>
         <template #title><span class="groupname">用户反馈</span></template>
         <el-menu-item index="/admin/feed">反馈管理</el-menu-item>
@@ -45,7 +46,6 @@
       <el-menu-item-group>
         <template #title><span class="groupname">用户报修</span></template>
         <el-menu-item index="/admin/fix">报修管理</el-menu-item>
-        <el-menu-item index="/admin/feedixprocess">进度跟进</el-menu-item>
       </el-menu-item-group>
     </el-sub-menu>
     <el-sub-menu index="5">

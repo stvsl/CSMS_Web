@@ -46,7 +46,7 @@
                                 <el-button type="primary" :icon="Promotion" color="#ffc94a" round @click="() => {
                                     router.push('/user/activity')
                                 }">
-                                    我的活动
+                                    活动中心
                                 </el-button>
                                 <el-button type="primary" :icon="Avatar" color="#d9ed8f" round @click="() => {
                                     router.push('/user/fix');

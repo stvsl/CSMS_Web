@@ -1,7 +1,7 @@
 <template>
   <a-col :offset="3" :span="20">
     <a-row>
-      <a-page-header title="全部文章" subtitle="全部历史文章" @back="() => {
+      <a-page-header title="全部公告" subtitle="全部历史公告" @back="() => {
         router.back();
       }">
       </a-page-header>
@@ -10,7 +10,7 @@
     <a-row>
       <a-col :offset="3" :span="16">
         <a-row v-for="i in 10" :key="i">
-          <UserArcicleCard></UserArcicleCard>
+          <UserAnounceCard :mode="true"></UserAnounceCard>
           <a-divider></a-divider>
         </a-row>
         <br>
@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts" setup>
-import UserArcicleCard from "../usercomponents/UserArcicleCard.vue";
+import UserAnounceCard from "../usercomponents/UserAnounceCard.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();

@@ -92,6 +92,36 @@ const routes = [
     name: "overview",
     component: () => import("../views/UserOverview.vue"),
   },
+  {
+    path: "/article/all",
+    name: "articleall",
+    component: () => import("../views/UserArticleAll.vue"),
+  },
+  {
+    path: "/anounce/all",
+    name: "anounceall",
+    component: () => import("../views/UserAnounceAll.vue"),
+  },
+  {
+    path: "/user/activity",
+    name: "useractivity",
+    component: () => import("../views/UserActivicy.vue"),
+  },
+  {
+    path: "/article/:id",
+    name: "article",
+    component: () => import("../views/ArticleView.vue"),
+  },
+  {
+    path: "/anounce/:id",
+    name: "anounce",
+    component: () => import("../views/AnounceView.vue"),
+  },
+  {
+    path: "/user/info",
+    name: "userinfo",
+    component: () => import("../views/UserInfo.vue"),
+  },
 ];
 
 const router = createRouter({

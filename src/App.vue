@@ -7,7 +7,7 @@ import AdminMenu from './components/AdminMenu.vue'
 
 const showtop = ref(true);
 const showbottom = ref(true);
-const showaside = ref(true);
+const showaside = ref(false);
 const route = useRoute();
 
 watch(() => route.path, (newPath) => {
@@ -18,7 +18,7 @@ watch(() => route.path, (newPath) => {
   } else {
     showtop.value = true;
     showbottom.value = true;
-    showaside.value = true;
+    showaside.value = false;
   }
 });
 </script>

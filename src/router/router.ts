@@ -15,7 +15,7 @@ const routes = [
   {
     path: "/admin/overview",
     name: "adminoverview",
-    component: () => import("../views/OverviewView.vue"),
+    component: () => import("../views/AdminOverview.vue"),
   },
   {
     path: "/admin/article",
@@ -61,6 +61,36 @@ const routes = [
     path: "/admin/feedixprocess",
     name: "adminfeedixprocess",
     component: () => import("../views/AdminFeedixProcess.vue"),
+  },
+  {
+    path: "/admin/account",
+    name: "adminaccountmanage",
+    component: () => import("../views/AdminUserAccount.vue"),
+  },
+  {
+    path: "/admin/idinfo/:id",
+    name: "adminidinfo",
+    component: () => import("../views/AdminUserInfo.vue"),
+  },
+  {
+    path: "/admin/idinfo",
+    name: "adminidinfomanage",
+    component: () => import("../views/AdminUserInfoList.vue"),
+  },
+  {
+    path: "/admin/right",
+    name: "adminaccountright",
+    component: () => import("../views/AdminAccountRight.vue"),
+  },
+  {
+    path: "/admin/setting",
+    name: "adminsetting",
+    component: () => import("../views/AdminSetting.vue"),
+  },
+  {
+    path: "/",
+    name: "overview",
+    component: () => import("../views/UserOverview.vue"),
   },
 ];
 

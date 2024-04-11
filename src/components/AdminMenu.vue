@@ -90,7 +90,7 @@ const isCollapse = ref(false)
 
 <style scoped>
 .el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 300px;
+  width: 250px;
   min-height: 400px;
 }
 

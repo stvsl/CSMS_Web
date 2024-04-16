@@ -1,14 +1,17 @@
 <template>
   <a-col :offset="3" :span="20">
     <a-row>
-      <a-page-header title="近期活动" subtitle="活动中心" @back="() => {
-        router.back();
-      }">
-      <template #extra>
-        <a-space></a-space>
-      <a-link href="link" status="warning"><icon-message />我的活动</a-link>
-                    </template>
-      </a-page-header>
+      <a-col :span="20">
+        <a-page-header title="近期活动" @back="() => {
+          router.back();
+        }">
+          <template #extra>
+            <div style="height: 100%; display: flex; justify-content: flex-end;">
+              <a-link @click="gotoMyActivity" status="warning"><icon-message />我的活动</a-link>
+            </div>
+          </template>
+        </a-page-header>
+      </a-col>
     </a-row>
     <br>
     <a-row>
@@ -35,5 +38,9 @@ import UserActivityCard from "../usercomponents/UserActivityCard.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+
+const gotoMyActivity = () => {
+  router.push("/user/myactivity");
+};
 
 </script>

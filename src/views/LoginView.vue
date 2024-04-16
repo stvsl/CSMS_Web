@@ -29,12 +29,14 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus';
+import useUserStore from '../stores/modules/user';
 
 const router = useRouter();
 const loginfail = ref(false);
 const id = ref('');
 const passwd = ref('');
+const userStore = useUserStore();
 
 const handleLogin = () => {
   var myHeaders = new Headers();
@@ -55,14 +57,49 @@ const handleLogin = () => {
   fetch(request)
     .then(response => response.text())
     .then(result => {
-      const res = JSON.parse(result) as { code: string };
+      const res = JSON.parse(result) as { code: string, info: object };
       if (res.code == "200") {
         loginfail.value = false;
         ElMessage({
           message: '登录成功',
           type: 'success',
         })
-        // TODO 保存登录状态
+        userStore.updateAdmin(res.info);
+        router.push("/admin/overview");
+      } else {
+        handleUserLogin();
+      }
+    })
+    .catch(error => console.log('error', error));
+}
+
+const handleUserLogin = () => {
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  var raw = JSON.stringify({
+    "id": id.value,
+    "passwd": passwd.value
+  });
+
+  var request = new Request("http://127.0.0.1:6521/api/user/login", {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow' // 设置重定向行为为跟随重定向
+  });
+
+  fetch(request)
+    .then(response => response.text())
+    .then(result => {
+      const res = JSON.parse(result) as { code: string, info: object };
+      if (res.code == "200") {
+        loginfail.value = false;
+        ElMessage({
+          message: '登录成功',
+          type: 'success',
+        })
+        userStore.updateAdmin(res.info);
         router.push("/");
       } else {
         ElMessage.error("登录失败");

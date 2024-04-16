@@ -1,5 +1,5 @@
 <template>
-  <a-list-item class="list-demo-item" action-layout="vertical">
+  <a-list-item @click="goDetail" class="list-demo-item" action-layout="vertical">
     <template #actions>
       <span><icon-user />&nbsp;用户名</span>
       <span><icon-eye />&nbsp;111</span>
@@ -14,3 +14,16 @@
     </a-list-item-meta>
   </a-list-item>
 </template>
+
+<script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const goDetail = () => {
+  router.push({
+    path: '/article/' + 1,
+  });
+};
+
+</script>

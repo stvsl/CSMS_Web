@@ -108,6 +108,11 @@ const routes = [
     component: () => import("../views/UserActivicy.vue"),
   },
   {
+    path: "/user/myactivity",
+    name: "usermyactivity",
+    component: () => import("../views/UserMyActivicy.vue"),
+  },
+  {
     path: "/article/:id",
     name: "article",
     component: () => import("../views/ArticleView.vue"),
@@ -121,6 +126,21 @@ const routes = [
     path: "/user/info",
     name: "userinfo",
     component: () => import("../views/UserInfo.vue"),
+  },
+  {
+    path: "/user/fix",
+    name: "userfixcenter",
+    component: () => import("../views/UserFixCenter.vue"),
+  },
+  {
+    path: "/user/feed",
+    name: "userfeedcenter",
+    component: () => import("../views/UserFeedCenter.vue"),
+  },
+  {
+    path: "/activity/:id",
+    name: "activity",
+    component: () => import("../views/ActivityView.vue"),
   },
 ];
 

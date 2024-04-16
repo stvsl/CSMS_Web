@@ -51,7 +51,7 @@
                                 <el-button type="primary" :icon="Avatar" color="#d9ed8f" round @click="() => {
                                     router.push('/user/fix');
                                 }">
-                                    维修申请
+                                    维修中心
                                 </el-button>
                             </a-space>
                         </a-card>

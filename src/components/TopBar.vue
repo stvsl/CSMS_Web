@@ -1,40 +1,63 @@
 <template>
-  <div class="topbar">
-    <h1 class="title">社区服务系统</h1>
-    <div class="search">
-      <input type="search" placeholder="搜索一下">
-    </div>
-    <div class="btns">
-      <RouterLink class="button" to="/login">信息</RouterLink>
-      <RouterLink class="button" to="/login">活动</RouterLink>
-      <RouterLink class="button" to="/login">反馈</RouterLink>
-      <RouterLink class="button" to="/login">登录</RouterLink>
-    </div>
-  </div>
+  <a-affix :offsetTop="0" @change="onChange">
+    <a-col>
+      <a-row class="topbar">
+        <a-col :span="4" class="height100">
+          <router-link to="/" class="height100">
+            <span class="title">社区服务系统</span>
+          </router-link>
+        </a-col>
+        <a-col class="height100" :offset="4" :span="8">
+          <a-input-search :style="{ width: '100%' }" :size="isTop ? 'large' : 'medium'" placeholder="开始搜索吧！" />
+        </a-col>
+        <a-col class="btns height100" :span="4">
+          <RouterLink class="button" to="/user/activity">活动</RouterLink>
+          <RouterLink class="button" to="/user/feed">反馈</RouterLink>
+          <RouterLink v-if="userStore.status == 0" class="button" to="/login">登录</RouterLink>
+          <a-popconfirm v-else content="您确定要退出登录吗?" @ok="exitLogin">
+            <a-button type="text" class="button">Hi ! {{ userStore.Name }}</a-button>
+          </a-popconfirm>
+        </a-col>
+      </a-row>
+    </a-col>
+  </a-affix>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import useUserStore from '../stores/modules/user';
 
+const router = useRouter();
+const userStore = useUserStore();
+const isTop = ref(true);
+const onChange = (fixed: boolean) => {
+  if (fixed) {
+    isTop.value = false;
+  } else {
+    isTop.value = true;
+  }
+};
+const exitLogin = () => {
+  userStore.logout();
+  router.push('/');
+};
 </script>
 
 <style scoped>
 .topbar {
-  height: 60px;
+  height: v-bind(isTop ? '60px' : '45px');
   backdrop-filter: blur(10px);
-  background-color: rgba(207, 206, 206, 0.536);
+  background-color: rgb(207, 206, 206);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
+  transition: 0.3s;
 }
 
 .title {
-  flex-grow: 1;
   color: #333;
   font-size: 24px;
-  text-align: left;
-  margin-left: 100px;
+  margin-left: v-bind(isTop ? '70px' : '20px');
+  transition: 0.3s;
 }
 
 .search {
@@ -45,6 +68,12 @@
   margin: auto 0;
   margin-left: 10%;
   backdrop-filter: blur(10px);
+}
+
+.height100 {
+  display: flex;
+  height: 100%;
+  align-items: center;
 }
 
 .search input {

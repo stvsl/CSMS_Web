@@ -21,10 +21,13 @@
     </template>
     <template #extra>
       <div style="display:flex;height: 100%; text-align: right; align-items: center;">
-        <span>查看详情>></span>
+        <el-button type="success" size="large" :icon="Check" circle />
+        <el-button type="danger" size="large" :icon="Close" circle />
+        <el-button type="primary" loading circle size="large"></el-button>
+        <el-button type="warning" :icon="CloseBold">退出活动</el-button>
       </div>
     </template>
-    <a-list-item-meta description="v关于军方击毙iui哦i和口语胡一负于覅u关于工艺i覅与i故意犯规与开发有">
+    <a-list-item-meta title="活动标题" description="v关于军方击毙iui哦i和口语胡一负于覅u关于工艺i覅与i故意犯规与开发有">
       <template #title>
         <a-typography-text strong>大师的dffgsfsd</a-typography-text>
       </template>
@@ -32,9 +35,9 @@
   </a-list-item>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
+import { Check, Close, CloseBold } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router';
-
 const router = useRouter();
 const pushToActivity = () => {
   router.push({

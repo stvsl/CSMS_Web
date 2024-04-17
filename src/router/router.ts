@@ -33,6 +33,11 @@ const routes = [
     component: () => import("../views/ContentEditor.vue"),
   },
   {
+    path: "/admin/article/edit/:id",
+    name: "adminarticleedit",
+    component: () => import("../views/AdminArticleEdit.vue"),
+  },
+  {
     path: "/admin/activity/create",
     name: "adminactivitycreate",
     component: () => import("../views/AdminActivityCreate.vue"),
@@ -141,6 +146,11 @@ const routes = [
     path: "/activity/:id",
     name: "activity",
     component: () => import("../views/ActivityView.vue"),
+  },
+  {
+    path: "/admin/anounce/edit/:id",
+    name: "adminanounceedit",
+    component: () => import("../views/AdminAnounceEdit.vue"),
   },
 ];
 

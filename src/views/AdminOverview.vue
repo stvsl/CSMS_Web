@@ -159,7 +159,9 @@
                         }">
                             账户权限
                         </el-button>
-                        <el-button type="primary" :icon="Switch" color="#c5fff8" round size="large">
+                        <el-button type="primary" :icon="Switch" color="#c5fff8" round size="large" @click="() => {
+                            router.push('/');
+                        }">
                             普通用户视角
                         </el-button>
                     </a-space>

@@ -37,8 +37,6 @@ import { ElMessage } from 'element-plus';
 <script lang="ts" setup>
 import { ref, defineEmits } from 'vue';
 import { ElMessage } from 'element-plus';
-import { ContactsOutlined } from '@ant-design/icons-vue';
-
 import { useRouter } from 'vue-router'
 const router = useRouter();
 const id = ref(25);

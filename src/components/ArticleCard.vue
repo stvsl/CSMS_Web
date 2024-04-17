@@ -2,7 +2,7 @@
     <a-list-item class="list-demo-item" action-layout="vertical">
         <template #actions>
             <span><icon-user />&nbsp;{{ article?.Author }}</span>
-            <span><icon-eye />&nbsp;{{ article?.Pageviews }}</span>
+            <span><icon-eye />&nbsp;{{ article?.Status ? article?.Pageviews : "null" }}</span>
             <span>发布时间：{{ formatDate(article?.Writetime) }}</span>
             <span>更新时间：{{ formatDate(article?.Updatetime) }}</span>
         </template>
@@ -13,11 +13,11 @@
                         <template #icon>
                             <icon-eye />
                         </template>查看</a-button>
-                    <a-button status="warning">
+                    <a-button status="warning" @click="router.push(`/admin/article/edit/` + article?.Aid)">
                         <template #icon>
                             <icon-edit />
                         </template>修改</a-button>
-                    <a-button status="danger">
+                    <a-button status="danger" @click="deleteVisible = true">
                         <template #icon>
                             <icon-delete />
                         </template>删除</a-button>
@@ -30,12 +30,21 @@
             </template>
         </a-list-item-meta>
     </a-list-item>
+    <a-modal v-model:visible="deleteVisible" :on-before-ok="handleDelete" unmountOnClose>
+        <template #title>
+            删除文章确认
+        </template>
+        <div>您确定要删除此文章吗？此操作不可撤销！！！
+        </div>
+    </a-modal>
 </template>
 
 <script lang="ts" setup>
+import { ElMessage } from 'element-plus';
 import { defineProps, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
+const deleteVisible = ref(false);
 const handleView = () => {
     router.push(`/article/${props.id}`);
 };
@@ -71,7 +80,7 @@ const formatDate = (dateTimeString: string) => {
     return `${year}年${month}月${day}日${hour}:${minute}`;
 }
 
-const article = ref < Article > ({
+const article = ref<Article>({
     Aid: 0,
     Coverimg: "",
     Contentimg: "",
@@ -103,4 +112,24 @@ onMounted(() => {
         )
         .catch(error => console.log('error', error));
 })
+
+const handleDelete = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:6521/api/article/delete?id=" + props.id, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            deleteVisible.value = false;
+            router.go(0);
+        }
+        )
+        .catch(error => ElMessage.error('网络错误！', error));
+}
 </script>

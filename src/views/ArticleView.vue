@@ -8,8 +8,7 @@
                 }">
                     <a-carousel-item>
                         <div class="container">
-                            <a-image width="100%" height="100%" fit="cover"
-                                src="https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/a8c8cdb109cb051163646151a4a5083b.png~tplv-uwbnlip3yd-webp.webp" />
+                            <a-image width="100%" height="100%" fit="cover" :src="article.Contentimg" />
                             <div class="back">
                                 <el-button type="danger" color="#e3e3e3" size="large" :icon="ArrowLeftBold" circle
                                     @click="() => {
@@ -17,19 +16,19 @@
                                     }" />
                             </div>
                             <div class="content">
-                                <h1>标题</h1>
-                                <p class="intro">简介</p>
+                                <h1>{{ article.Title }}</h1>
+                                <p class="intro">{{ article.Introduction }}</p>
                                 <br>
                                 <p style="margin-right: 100px; text-align: right;">
                                     <el-icon color="rgb(255, 255, 255)">
                                         <UserFilled />
                                     </el-icon>&nbsp;
-                                    <span>作者</span> &nbsp;&nbsp;
+                                    <span>{{ article.Author }}</span> &nbsp;&nbsp;
                                     <el-icon color="rgb(255, 255, 255)">
                                         <View />
                                     </el-icon>&nbsp;
-                                    <span>1515</span> &nbsp;&nbsp;
-                                    <span>XXXX年XX月XX日</span>
+                                    <span>{{ article.Pageviews }}</span> &nbsp;&nbsp;
+                                    <span>{{ formatDate(article.Updatetime) }}</span>
                                 </p>
                             </div>
                         </div>
@@ -37,7 +36,7 @@
                 </a-carousel>
                 <a-row>
                     <a-col :span="20" :offset="2">
-                        <div v-html="content"></div>
+                        <div class="v-html-container" v-html="article.Text"></div>
                     </a-col>
                 </a-row>
             </a-col>
@@ -48,9 +47,68 @@
 <script lang="ts" setup>
 import { View, UserFilled, ArrowLeftBold } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router';
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 const router = useRouter()
-const content = ref('<h1>标题</h1><p>sasas</p>')
+
+const aid = ref(router.currentRoute.value.params.id);
+
+interface Article {
+    Aid: number;
+    Coverimg: string;
+    Contentimg: string;
+    Title: string;
+    Introduction: string;
+    Text: string;
+    Writetime: string;
+    Updatetime: string;
+    Author: string;
+    Pageviews: number;
+    Status: number;
+}
+
+const formatDate = (dateTimeString: string) => {
+    const date = new Date(dateTimeString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hour = String(date.getHours()).padStart(2, '0');
+    const minute = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}年${month}月${day}日${hour}:${minute}`;
+}
+
+const article = ref<Article>({
+    Aid: 0,
+    Coverimg: "",
+    Contentimg: "",
+    Title: "loading...",
+    Introduction: "loading...",
+    Text: "",
+    Writetime: "",
+    Updatetime: "",
+    Author: "",
+    Pageviews: 0,
+    Status: 0,
+});
+onMounted(() => {
+    var myHeaders = new Headers();
+    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:6521/api/article/details?id=" + aid.value, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            article.value = JSON.parse(result).data;
+            console.log(article.value);
+        }
+        )
+        .catch(error => console.log('error', error));
+})
 </script>
 
 <style scoped>

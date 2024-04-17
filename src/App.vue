@@ -67,7 +67,12 @@ watch(() => route.path, (newPath) => {
     <router-view></router-view>
   </el-container>
   <BottomBar v-if="showbottom"></BottomBar>
-  <el-backtop :right="100" :bottom="160" />
+  <el-backtop :right="60" :bottom="160" />
+  <el-affix v-if="userStore.loginStatus() == 1 && !showaside" position="bottom" :offset="110">
+    <el-col :span="3" :offset="22">
+      <el-button type="primary" size="large" @click="router.push('/admin/overview')">管理员<br>模式</el-button>
+    </el-col>
+  </el-affix>
 </template>
 
 <style scoped>
@@ -78,5 +83,9 @@ watch(() => route.path, (newPath) => {
 
 .el-container {
   min-height: 100vh;
+}
+
+.el-affix {
+  height: 0;
 }
 </style>

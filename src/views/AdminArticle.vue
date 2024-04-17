@@ -24,6 +24,7 @@
             <el-col :span="10" :offset="7">
                 <el-pagination :page-size="10" background layout="prev, pager, next, jumper" :total="count" @change="(currentPage) => {
                     page = currentPage;
+                    getArticleList(page);
                 }" :hide-on-single-page="true" />
             </el-col>
         </el-row>

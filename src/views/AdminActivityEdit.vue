@@ -36,7 +36,7 @@
     </el-col>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { onBeforeUnmount, ref, shallowRef, onMounted, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Upload, Delete } from '@element-plus/icons-vue'
@@ -55,15 +55,50 @@ const clearDialogVisible = ref(false)
 
 const editorRef = shallowRef()
 
+const acid = ref(router.currentRoute.value.params.id);
+
 // 内容 HTML
 const valueHtml = ref('')
 
+interface FormActive {
+    name: string,
+    startDate: string,
+    startTime: string,
+    stopDate: string,
+    stopTime: string,
+    maxcount: number,
+    position: string,
+    detail: string
+}
 // 模拟 ajax 异步获取内容
 onMounted(() => {
-    // valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>'
-    // 从路由的params中获取id
-    ElMessage.info('模拟' + route.params.id + '获取内容')
+    var myHeaders = new Headers();
+    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
 
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:6521/api/activity/details?id=" + acid.value, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var data = JSON.parse(result).data;
+            const active = <FormActive>{
+                name: data.Name,
+                startTime: data.Starttime,
+                startDate: data.Starttime,
+                stopTime: data.Endtime,
+                stopDate: data.Endtime,
+                detail: data.Detail,
+                maxcount: data.Maxcount,
+                position: data.Position
+            }
+            vFormRef.value.setFormData(active);
+            valueHtml.value = data.Text;
+        })
+        .catch(error => ElMessage.warning('error', error));
 })
 
 const toolbarConfig = {
@@ -94,6 +129,7 @@ const submitForm = () => {
     vFormRef.value.getFormData().then(formData => {
         // Form Validation OK
         var raw = JSON.stringify({
+            'acid': Number(acid.value),
             'data': formData, 'content': valueHtml.value
         });
         var myHeaders = new Headers();
@@ -107,17 +143,17 @@ const submitForm = () => {
             redirect: 'follow'
         };
 
-        fetch("http://127.0.0.1:6521/api/activity/upload", requestOptions)
+        fetch("http://127.0.0.1:6521/api/activity/update", requestOptions)
             .then(response => response.text())
             .then(result => {
                 const res = JSON.parse(result)
                 if (res.code == 200) {
-                    ElMessage.success('提交成功')
+                    ElMessage.success('修改成功')
+                    router.back();
                 } else {
-                    ElMessage.error('提交失败,请检查网络')
+                    ElMessage.error('修改失败,请检查网络')
                 }
             })
-            .then(result => console.log(result))
             .catch(error => console.log('error', error));
     }).catch(error => {
         // Form Validation failed

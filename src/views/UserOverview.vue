@@ -5,13 +5,13 @@
                 width: '100%',
                 height: '240px',
             }" indicator-type="line">
-                <a-carousel-item v-for="image in images" :style="{ width: '60%' }">
-                    <router-link :to="'/article/' + 1">
+                <a-carousel-item v-for="idx in recentArctile" :style="{ width: '60%' }">
+                    <router-link :to="'/article/' + idx.Aid">
                         <div class="container">
-                            <img :src="image">
+                            <img :src="idx.Contentimg">
                             <div class="content">
-                                <h2>标题</h2>
-                                <span>简介</span>
+                                <h2>{{ idx.Title }}</h2>
+                                <span>{{ idx.Introduction }}</span>
                             </div>
                         </div>
                     </router-link>
@@ -25,9 +25,9 @@
                         <router-link to="/article/all">更多文章>></router-link>
                     </template>
                     <a-row>
-                        <a-col :span="24" v-for="i in 5" :key="i">
-                            <UserArcicleCard />
-                            <a-divider v-if="i !== 5" />
+                        <a-col :span="24" v-for="idx in recentArctile">
+                            <UserArcicleCard :id="idx.Aid" />
+                            <a-divider />
                         </a-col>
                     </a-row>
                 </a-card>
@@ -65,9 +65,9 @@
                                 <router-link to="/anounce/all">更多公告>></router-link>
                             </template>
                             <a-row>
-                                <a-col :span="24" v-for="i in 5" :key="i">
-                                    <UserAnounceCard />
-                                    <a-divider v-if="i !== 5" />
+                                <a-col :span="24" v-for="i in recentAnounce">
+                                    <UserAnounceCard :id="i" />
+                                    <a-divider />
                                 </a-col>
                             </a-row>
                         </a-card>
@@ -81,16 +81,62 @@
 <script lang="ts" setup>
 import { Edit, Promotion, Avatar } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
 import UserArcicleCard from '../usercomponents/UserArcicleCard.vue';
 import UserAnounceCard from '../usercomponents/UserAnounceCard.vue';
+import { ElMessage } from 'element-plus';
 const router = useRouter();
 
-const images = [
-    'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/cd7a1aaea8e1c5e3d26fe2591e561798.png~tplv-uwbnlip3yd-webp.webp',
-    'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/6480dbc69be1b5de95010289787d64f1.png~tplv-uwbnlip3yd-webp.webp',
-    'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/0265a04fddbd77a19602a15d9d55d797.png~tplv-uwbnlip3yd-webp.webp',
-    'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/24e0dd27418d2291b65db1b21aa62254.png~tplv-uwbnlip3yd-webp.webp',
-];
+interface Article {
+    Aid: number;
+    Coverimg: string;
+    Contentimg: string;
+    Title: string;
+    Introduction: string;
+    Text: string;
+    Writetime: string;
+    Updatetime: string;
+    Author: string;
+    Pageviews: number;
+    Status: number;
+}
+
+interface Anounce {
+    Aid: number;
+    Title: string;
+    Introduction: string;
+    Text: string;
+    Writetime: string;
+    Updatetime: string;
+    Author: string;
+    Pageviews: number;
+    Status: number;
+}
+
+const recentArctile = ref<Article[]>([]);
+const recentAnounce = ref<Anounce[]>([]);
+
+onMounted(() => {
+    var myHeaders = new Headers();
+    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+    var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:6521/api/article/id/recent", requestOptions)
+        .then(response => response.text())
+        .then(result => recentArctile.value = JSON.parse(result).data)
+        .catch(error => ElMessage.error('error', error));
+
+    fetch("http://127.0.0.1:6521/api/anounce/id/recent", requestOptions)
+        .then(response => response.text())
+        .then(result => recentAnounce.value = JSON.parse(result).data)
+        .catch(error => ElMessage.error('error', error));
+
+});
 
 </script>
 

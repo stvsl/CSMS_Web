@@ -14,87 +14,116 @@
     </el-row>
     <el-row>
       <el-col :span="15" :offset="1"> <a-list :bordered="false">
-          <a-list-item v-for="idx in 4" :key="idx">
-            <ActiveCard @manageSomeOne="manageSomeOne" @deleteSomeOne="deleteSomeOne"></ActiveCard>
+          <a-list-item v-for="idx in activity" :key="idx.Acid">
+            <ActiveCard :id="idx.Acid" @fetchPeopleStatus="fetchPeopleStatus" @deleteSomeOne="deleteSomeOne">
+            </ActiveCard>
           </a-list-item>
         </a-list>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="10" :offset="7">
-        <el-pagination :page-size="10" background layout="prev, pager, next, jumper" :total="1000" />
+        <el-pagination :page-size="10" background layout="prev, pager, next, jumper" :total="count" @change="(currentPage) => {
+          handlePageUpdate(currentPage);
+        }" />
       </el-col>
     </el-row>
   </el-col>
-  <a-drawer :width="720" :visible="visible" @ok="handleOk" @cancel="handleCancel">
+  <a-modal :visible="deleteConfirmVisible" @ok="handleDeleteActivity" @cancel="deleteConfirmVisible = false" okText="确认"
+    cancelText="取消" unmountOnClose>
     <template #title>
-      当前XXX活动人员管理
+      删除活动确认
     </template>
-    <a-list>
-      <a-list-item v-for="idx in 4" :key="idx">
-        <a-list-item-meta title="姓名" description="联系方式:18888888888">
-          <template #avatar>
-            <a-avatar shape="square">
-              <img alt="avatar"
-                src="https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp" />
-            </a-avatar>
-          </template>
-        </a-list-item-meta>
-        <template #actions>
-          <a-button type="outline" shape="round" status="success">
-            <template #icon>
-              <icon-check />
-            </template>通过
-          </a-button>
-          <a-button type="outline" shape="round" status="danger">
-            <template #icon>
-              <icon-close />
-            </template>拒绝
-          </a-button>
-          <a-button type="outline" shape="round" status="warning">
-            <template #icon>
-              <icon-minus-circle />
-            </template>等待
-          </a-button>
-        </template>
-      </a-list-item>
-    </a-list>
-  </a-drawer>
-  <a-modal :visible="visible" @ok="handleOk" @cancel="handleCancel" okText="Confirm" cancelText="Exit" unmountOnClose>
-    <template #title>
-      Title
-    </template>
-    <div>You can customize modal body text by the current situation. This modal will be closed immediately once you
-      press
-      the OK button.</div>
+    <div>您确认要删除此活动吗？此操作将无法恢复！</div>
   </a-modal>
 </template>
 
 <script lang="ts" setup>
 import ActiveCard from '../components/ActiveCard.vue'
-import { Modal } from '@arco-design/web-vue';
 import { ElMessage } from 'element-plus'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import router from '../router/router';
 
-const visible = ref(false);
+const count = ref(0);
 
-const handleClick = () => {
-  visible.value = true;
+onMounted(() => {
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:6521/api/anounce/count", requestOptions)
+    .then(response => response.text())
+    .then(result => count.value = JSON.parse(result).count)
+    .catch(error => ElMessage.warning('error', error));
+  handlePageUpdate(1);
+})
+
+const deleteConfirmVisible = ref(false);
+const deleteID = ref(0);
+const deleteSomeOne = (id: number) => {
+  deleteConfirmVisible.value = true;
+  deleteID.value = id;
 };
-const handleOk = () => {
-  visible.value = false;
+
+const handleDeleteActivity = () => {
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:6521/api/activity/delete?id=" + deleteID.value, requestOptions)
+    .then(response => response.text())
+    .then(result => {
+      if (JSON.parse(result).code == 200) {
+        ElMessage.success("删除成功");
+        router.go(0);
+      } else {
+        ElMessage.error("删除失败,请检查网络" + JSON.parse(result).message);
+      }
+    })
+    .catch(error => ElMessage.error('error', error));
 };
-const handleCancel = () => {
-  visible.value = false;
+
+interface ActivityID {
+  Acid: number;
 }
+const activity = ref<ActivityID[]>([]);
 
-const manageSomeOne = (id: number) => {
-  visible.value = true;
-}
-
-const deleteSomeOne = () => {
-  visible.value = true;
+const fetchPeopleStatus = (id: number, count: number) => {
+  for (let i = 0; i < activity.value.length; i++) {
+    if (activity.value[i].Acid == id) {
+      activity.value[i].Acid = count;
+      return;
+    }
+  }
 };
+
+const handlePageUpdate = (page: number) => {
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:6521/api/activity/id/list?page=" + page, requestOptions)
+    .then(response => response.text())
+    .then(result => {
+      activity.value = JSON.parse(result).data;
+    })
+    .catch(error => console.log('error', error));
+}
 </script>
 
 <style scoped></style>

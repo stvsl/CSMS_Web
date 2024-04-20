@@ -88,3 +88,7 @@ button:focus-visible {
 li{
   list-style-type: none;
 }
+
+::-webkit-scrollbar {
+  display: none;
+}

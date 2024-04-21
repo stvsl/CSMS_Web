@@ -5,15 +5,16 @@
         <a-row>
           <a-col>
             <a-space>
-              <span><icon-user-group />&nbsp;xxx/xxxx</span> &nbsp;
-              <span><icon-clock-circle />&nbsp;2024.04.08 - 2024.04.09</span>
+              <span><icon-user-group />&nbsp;{{ active.Maxcount }}</span> &nbsp;
+              <span><icon-clock-circle />&nbsp;{{ formatDate(active.Starttime) }} - {{ formatDate(active.Endtime)
+                }}</span>
             </a-space>
           </a-col>
         </a-row>
         <a-row>
           <a-col>
             <a-space>
-              <span><icon-location />&nbsp;{{ '活动位置' }}</span>
+              <span><icon-location />&nbsp;{{ active.Position }}</span>
             </a-space>
           </a-col>
         </a-row>
@@ -24,9 +25,9 @@
         <span>查看详情>></span>
       </div>
     </template>
-    <a-list-item-meta description="v关于军方击毙iui哦i和口语胡一负于覅u关于工艺i覅与i故意犯规与开发有">
+    <a-list-item-meta :description="active.Detail">
       <template #title>
-        <a-typography-text strong>大师的dffgsfsd</a-typography-text>
+        <a-typography-text strong>{{ active.Name }}</a-typography-text>
       </template>
     </a-list-item-meta>
   </a-list-item>
@@ -34,14 +35,78 @@
 
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue'
+
+const props = defineProps({
+  id: {
+    type: Number,
+    default: false,
+  },
+});
 
 const router = useRouter();
 const pushToActivity = () => {
   router.push({
     name: 'activity',
     params: {
-      id: '1',
+      id: active.value.Acid,
     },
   });
 }
+
+const formatDate = (dateTimeString: string) => {
+  const date = new Date(dateTimeString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hour = String(date.getHours()).padStart(2, '0');
+  const minute = String(date.getMinutes()).padStart(2, '0');
+
+  return `${year}年${month}月${day}日${hour}:${minute}`;
+}
+
+interface Active {
+  Acid: number;
+  Name: string;
+  Starttime: string;
+  Opentime: string;
+  Endtime: string;
+  Detail: string;
+  Text: string;
+  Views: number;
+  Maxcount: number;
+  Position: string;
+}
+
+const active = ref<Active>({
+  Acid: 0,
+  Name: 'loading...',
+  Starttime: 'loading...',
+  Opentime: 'loading...',
+  Endtime: 'loading...',
+  Detail: 'loading...',
+  Text: 'loading...',
+  Views: 0,
+  Maxcount: 0,
+  Position: 'loading...'
+});
+
+onMounted(() => {
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:6521/api/activity/details?id=" + props.id, requestOptions)
+    .then(response => response.text())
+    .then(result => {
+      active.value = JSON.parse(result).data;
+      count.value = JSON.parse(result).count;
+    })
+    .catch(error => console.log('error', error));
+})
 </script>

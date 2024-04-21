@@ -1,31 +1,38 @@
 <template>
-    <a-card title="报修编号：XXXX">
+    <a-card :title="'报修编号：' + fix.ID">
         <template #extra>
-            <a-button type="text" status="warning" @click="handleProcess">
+            <a-button v-if="fix.Status === 0 && fix.Process == 1" type="text" status="success"
+                @click="handleProcessUpdate(2)">
+                采纳
+            </a-button>
+            <a-button v-if="fix.Status === 0 && fix.Process > 1" type="text" status="warning" @click="handleProcess">
                 处理
             </a-button>
-            <a-button type="text" status="danger">
-                关闭
+            <a-button v-if="fix.Status === 0" type="text" status="danger" @click="handleStatusUpdate(1)">
+                直接关闭
+            </a-button>
+            <a-button v-else type="text" status="success" @click="handleStatusUpdate(0)">
+                重新打开
             </a-button>
         </template>
         <a-descriptions :column="3">
             <a-descriptions-item label="名称">
-                报修名称
+                {{ fix.Name }}
             </a-descriptions-item>
-            <a-descriptions-item label="来源用户">
-                来源用户
+            <a-descriptions-item label="来源用户UID">
+                {{ fix.UID }}
             </a-descriptions-item>
             <a-descriptions-item label="创建时间">
-                XXXX-XX-XX
+                {{ formatDate(fix.Feedtime) }}
             </a-descriptions-item>
             <a-descriptions-item label="更新时间">
-                更新时间
+                {{ formatDate(fix.Updatetime) }}
             </a-descriptions-item>
-            <a-descriptions-item label="委派人">
-                委派人
+            <a-descriptions-item label="委派人ID">
+                {{ fix.Oid == 0 ? "暂无" : fix.Oid }}
             </a-descriptions-item>
-            <a-descriptions-item label="处理人">
-                处理人
+            <a-descriptions-item label="委派信息">
+                {{ fix.Processor == "" ? "暂无" : fix.Processor }}
             </a-descriptions-item>
         </a-descriptions>
         <a-row>
@@ -34,15 +41,16 @@
             </a-typography-text>
         </a-row>
         <a-row>
-            <div>映射HTML</div>
+            <div> {{ fix.Detail }} </div>
         </a-row>
         <a-divider />
-        <a-steps v-if="true" :current="1" status="process">
+        <a-steps v-if="fix.Status === 0" :current="fix.Process" status="process">
             <a-step title="已提交" />
+            <a-step title="已采纳" />
             <a-step title="正在处理" />
             <a-step title="处理完成" />
         </a-steps>
-        <a-steps v-else :current="2" status="error">
+        <a-steps v-else :current="fix.Process" status="error">
             <a-step title="已提交" />
             <a-step title="已关闭" />
         </a-steps>
@@ -53,13 +61,14 @@
             <a-form-item>
                 <a-radio-group v-model="processPanelStatus" type="button">
                     <a-radio :value="0" :default-checked="true">指定委派人</a-radio>
-                    <a-radio :value="1">设置处理人</a-radio>
+                    <a-radio :value="1">手动填入相关处理信息</a-radio>
                 </a-radio-group>
             </a-form-item>
-            <a-form-item v-if="processPanelStatus === 1" field="name" label="处理人姓名">
-                <a-input v-model="form.name" />
+            <a-form-item v-if="processPanelStatus === 1" field="name" label="相关信息">
+                <textarea v-model="form.name" :max-length="60" auto-size allow-clear
+                    style="width: 100%;height: 100px" />
             </a-form-item>
-            <a-form-item v-else field="post" label="指定委派人">
+            <a-form-item v-else field="id" label="指定委派人">
                 <a-select v-model="form.post">
                     <a-option value="post1">Post1</a-option>
                     <a-option value="post2">Post2</a-option>
@@ -72,11 +81,78 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue';
+import { ElMessage } from 'element-plus';
+import { ref, reactive, onMounted } from 'vue';
+import router from '../router/router';
+
+const props = defineProps({
+    id: {
+        type: Number,
+        required: true
+    }
+});
+
 const visible = ref(false);
 const form = reactive({
     name: '',
-    post: ''
+    id: ''
+});
+
+interface fix {
+    ID: number;
+    UID: number;
+    Type: number;
+    Name: string;
+    Feedtime: string;
+    Detail: string;
+    Process: number;
+    Status: number;
+    Oid: number;
+    Processor: string;
+    Updatetime: string;
+    Record: string;
+}
+
+const formatDate = (dateTimeString: string) => {
+    const date = new Date(dateTimeString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hour = String(date.getHours()).padStart(2, '0');
+    const minute = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}年${month}月${day}日${hour}:${minute}`;
+}
+
+const fix = ref<fix>({
+    ID: 0,
+    UID: 0,
+    Type: 0,
+    Name: 'loading...',
+    fixtime: 'loading...',
+    Detail: 'loading...',
+    Process: 0,
+    Status: 0,
+    Oid: 0,
+    Processor: "loading...",
+    Updatetime: 'loading...',
+    Record: 'loading...'
+});
+
+onMounted(() => {
+    var myHeaders = new Headers();
+    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:6521/api/fix/details?id=" + props.id, requestOptions)
+        .then(response => response.text())
+        .then(result => fix.value = JSON.parse(result).data)
+        .catch(error => ElMessage.error('error', error));
 });
 
 const handleProcess = () => {
@@ -86,12 +162,96 @@ const handleProcess = () => {
 const processPanelStatus = ref(0);
 
 const handleBeforeOk = (done) => {
-    console.log(form)
-    window.setTimeout(() => {
+    if (form.name == '' && form.id == '') {
+        ElMessage.error("请填写相关信息");
         done()
-    }, 3000)
+        return;
+    } else {
+        var myHeaders = new Headers();
+        myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow',
+            body: JSON.stringify({
+                "mode": processPanelStatus.value,
+                "name": form.name,
+                "id": form.id
+            })
+        };
+
+        fetch("http://127.0.0.1:6521/api/fix/do?id=" + props.id, requestOptions)
+            .then(response => response.text())
+            .then(result => {
+                if (JSON.parse(result).code === 200) {
+                    ElMessage.success("操作成功");
+                    var myHeaders = new Headers();
+                    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+                    var requestOptions = {
+                        method: 'POST',
+                        headers: myHeaders,
+                        redirect: 'follow'
+                    };
+
+                    fetch("http://127.0.0.1:6521/api/fix/details?id=" + props.id, requestOptions)
+                        .then(response => response.text())
+                        .then(result => fix.value = JSON.parse(result).data)
+                        .catch(error => ElMessage.error('error', error));
+                } else {
+                    ElMessage.error("操作失败");
+                }
+            })
+            .catch(error => ElMessage.error('error', error));
+    }
+    done();
 };
 const handleCancel = () => {
     visible.value = false;
+}
+
+const handleProcessUpdate = (status: number) => {
+    var myHeaders = new Headers();
+    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:6521/api/fix/process?id=" + props.id + "&status=" + status, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            if (JSON.parse(result).code === 200) {
+                fix.value.Process = status;
+                ElMessage.success("操作成功");
+            } else {
+                ElMessage.error("操作失败");
+            }
+        })
+        .catch(error => ElMessage.error('error', error));
+}
+
+const handleStatusUpdate = (status: number) => {
+    var myHeaders = new Headers();
+    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+    fetch("http://127.0.0.1:6521/api/fix/status?id=" + props.id + "&status=" + status, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            if (JSON.parse(result).code === 200) {
+                fix.value.Status = status;
+                ElMessage.success("操作成功");
+            } else {
+                ElMessage.error("操作失败");
+            }
+        })
+        .catch(error => ElMessage.error('error', error));
 }
 </script>

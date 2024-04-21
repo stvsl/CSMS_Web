@@ -24,26 +24,28 @@
           <a-divider />
           <a-row>
             <a-col :flex="1">
-              <a-statistic title="反馈总数" :value="125670" show-group-separator>
+              <a-statistic title="反馈总数" :value="feedData?.TotalFeedbacks" show-group-separator>
               </a-statistic>
             </a-col>
             <a-col :flex="1">
-              <a-statistic title="累计已处理" :value="5012" :precision="2" :value-style="{ color: '#0fbf60' }">
+              <a-statistic title="累计已处理" :value="feedData?.TotalProcessed" :precision="2"
+                :value-style="{ color: '#0fbf60' }">
               </a-statistic>
             </a-col>
             <a-col :flex="1">
-              <a-statistic title="未处理" :value="5010" :precision="2" :value-style="{ color: '#f5222d' }">
+              <a-statistic title="未处理" :value="feedData?.TotalPending" :precision="2"
+                :value-style="{ color: '#f5222d' }">
               </a-statistic>
             </a-col>
           </a-row>
           <br>
           <a-row>
             <a-col :flex="1">
-              <a-statistic title="进行中" :value="1256" show-group-separator>
+              <a-statistic title="进行中" :value="feedData?.InProgress" show-group-separator>
               </a-statistic>
             </a-col>
             <a-col :flex="2">
-              <a-statistic title="处理完成率" :value="12.56" show-group-separator>
+              <a-statistic title="处理完成率" :value="feedData?.CompletionRate * 100" show-group-separator>
                 <template #suffix>%</template>
               </a-statistic>
             </a-col>
@@ -64,26 +66,28 @@
           <a-divider />
           <a-row>
             <a-col :flex="1">
-              <a-statistic title="维修总数" :value="125670" show-group-separator>
+              <a-statistic title="维修总数" :value="fixData?.TotalFeedbacks" show-group-separator>
               </a-statistic>
             </a-col>
             <a-col :flex="1">
-              <a-statistic title="累计已处理" :value="5012" :precision="2" :value-style="{ color: '#0fbf60' }">
+              <a-statistic title="累计已处理" :value="fixData?.TotalProcessed" :precision="2"
+                :value-style="{ color: '#0fbf60' }">
               </a-statistic>
             </a-col>
             <a-col :flex="1">
-              <a-statistic title="未处理" :value="5010" :precision="2" :value-style="{ color: '#f5222d' }">
+              <a-statistic title="未处理" :value="fixData?.TotalPending" :precision="2"
+                :value-style="{ color: '#f5222d' }">
               </a-statistic>
             </a-col>
           </a-row>
           <br>
           <a-row>
             <a-col :flex="1">
-              <a-statistic title="进行中" :value="1256" show-group-separator>
+              <a-statistic title="进行中" :value="fixData?.InProgress" show-group-separator>
               </a-statistic>
             </a-col>
             <a-col :flex="2">
-              <a-statistic title="处理完成率" :value="12.56" show-group-separator>
+              <a-statistic title="处理完成率" :value="fixData?.CompletionRate * 100" show-group-separator>
                 <template #suffix>%</template>
               </a-statistic>
             </a-col>
@@ -95,6 +99,41 @@
 </template>
 
 <script lang="ts" setup>
+
+import { onMounted, ref } from 'vue';
+
+interface Data {
+  CompletionRate: number;
+  InProgress: number;
+  TotalFeedbacks: number;
+  TotalPending: number;
+  TotalProcessed: number;
+  TotalRepairs: number;
+}
+
+const feedData = ref<Data>();
+const fixData = ref<Data>();
+
+onMounted(() => {
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:6521/api/feed/admin/overview", requestOptions)
+    .then(response => response.text())
+    .then(result => feedData.value = JSON.parse(result).data)
+    .catch(error => console.log('error', error));
+  fetch("http://127.0.0.1:6521/api/fix/admin/overview", requestOptions)
+    .then(response => response.text())
+    .then(result => fixData.value = JSON.parse(result).data)
+    .catch(error => console.log('error', error));
+
+});
 </script>
 
 <style scoped>

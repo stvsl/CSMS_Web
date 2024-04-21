@@ -6,10 +6,10 @@
                     <a-col>
                         <a-space>
                             <span>
-                                反馈时间：{{ formatDate(fix.Feedtime) }}
+                                反馈时间：{{ formatDate(feed.Feedtime) }}
                             </span>
                             <span>
-                                更新时间：{{ formatDate(fix.Updatetime) }}
+                                更新时间：{{ formatDate(feed.Updatetime) }}
                             </span>
                         </a-space>
                     </a-col>
@@ -18,10 +18,10 @@
                     <a-col>
                         <a-space>
                             <span>
-                                委派人ID： {{ fix.Oid == 0 ? "暂无" : fix.Oid }}
+                                委派人ID： {{ feed.Oid == 0 ? "暂无" : feed.Oid }}
                             </span>
                             <span>
-                                委派信息： {{ fix.Processor == "" ? "暂无" : fix.Processor }}
+                                委派信息： {{ feed.Processor == "" ? "暂无" : feed.Processor }}
                             </span>
                         </a-space>
                     </a-col>
@@ -31,14 +31,14 @@
         <template #extra>
             <div style="display:flex;height: 100%; text-align: right; align-items: center;">
                 <a-space>
-                    <el-button v-if="fix.Process == 4" type="success" size="large" :icon="Check" circle />
-                    <el-button v-if="fix.Status == 1" type="danger" size="large" :icon="Close" circle />
+                    <el-button v-if="feed.Process == 4" type="success" size="large" :icon="Check" circle />
+                    <el-button v-if="feed.Status == 1" type="danger" size="large" :icon="Close" circle />
                     <el-button v-else type="primary" loading circle size="large"></el-button>
                     <span>查看进度>></span>
                 </a-space>
             </div>
         </template>
-        <a-list-item-meta :title="fix.Name" :description="fix.Detail">
+        <a-list-item-meta :title="feed.Name" :description="feed.Detail">
         </a-list-item-meta>
     </a-list-item>
     <a-modal v-model:visible="processvisible" @ok="handleOk" :width="450" :hide-cancel="true" :simple="true">
@@ -47,11 +47,11 @@
         </template>
         <a-row>
             <a-timeline :style="{ flex: 1 }">
-                <a-timeline-item v-if="fix.Process >= 1" dot-type="hollow">已提交</a-timeline-item>
-                <a-timeline-item v-if="fix.Process >= 2" dot-type="hollow">已受理</a-timeline-item>
-                <a-timeline-item v-if="fix.Process >= 3" dot-type="hollow">已开始处理，处理人：{{ fix.Iod }}</a-timeline-item>
-                <a-timeline-item v-if="fix.Process >= 4" dot-type="hollow">处理完成</a-timeline-item>
-                <a-timeline-item v-if="fix.Process >= 5" dot-type="hollow">已关闭</a-timeline-item>
+                <a-timeline-item v-if="feed.Process >= 1" dot-type="hollow">已提交</a-timeline-item>
+                <a-timeline-item v-if="feed.Process >= 2" dot-type="hollow">已受理</a-timeline-item>
+                <a-timeline-item v-if="feed.Process >= 3" dot-type="hollow">已开始处理，处理人：{{ feed.Iod }}</a-timeline-item>
+                <a-timeline-item v-if="feed.Process >= 4" dot-type="hollow">处理完成</a-timeline-item>
+                <a-timeline-item v-if="feed.Process >= 5" dot-type="hollow">已关闭</a-timeline-item>
             </a-timeline>
         </a-row>
     </a-modal>
@@ -69,7 +69,7 @@ const props = defineProps({
     },
 });
 
-interface fix {
+interface feed {
     ID: number;
     UID: number;
     Type: number;
@@ -95,12 +95,12 @@ const formatDate = (dateTimeString: string) => {
     return `${year}年${month}月${day}日${hour}:${minute}`;
 }
 
-const fix = ref<fix>({
+const feed = ref<feed>({
     ID: 0,
     UID: 0,
     Type: 0,
     Name: 'loading...',
-    fixtime: 'loading...',
+    feedtime: 'loading...',
     Detail: 'loading...',
     Process: 0,
     Status: 0,
@@ -120,9 +120,9 @@ onMounted(() => {
         redirect: 'follow'
     };
 
-    fetch("http://127.0.0.1:6521/api/fix/details?id=" + props.id, requestOptions)
+    fetch("http://127.0.0.1:6521/api/feed/details?id=" + props.id, requestOptions)
         .then(response => response.text())
-        .then(result => fix.value = JSON.parse(result).data)
+        .then(result => feed.value = JSON.parse(result).data)
         .catch(error => ElMessage.error('error', error));
 });
 

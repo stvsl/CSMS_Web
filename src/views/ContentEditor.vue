@@ -60,7 +60,7 @@
 <script lang="ts" setup>
 import { onBeforeUnmount, ref, shallowRef, onMounted, reactive } from 'vue'
 import { ElMessage, MessageParamsWithType } from 'element-plus'
-import { Upload, Delete } from '@element-plus/icons-vue'
+import { Upload } from '@element-plus/icons-vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import useUserStore from "../stores/modules/user"
 import '@wangeditor/editor/dist/css/style.css'
@@ -70,7 +70,6 @@ const formJson = reactive({ "widgetList": [{ "key": 49902, "type": "grid", "cate
 const formData = reactive({})
 const optionData = reactive({})
 const vFormRef = ref(null)
-const clearDialogVisible = ref(false)
 const userStore = useUserStore()
 const editorRef = shallowRef()
 

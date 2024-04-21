@@ -15,15 +15,17 @@
     </el-row>
     <el-row>
       <el-col :span="15" :offset="1"> <a-list :bordered="false">
-          <a-list-item v-for="idx in 5" :key="idx">
-            <FixCard></FixCard>
+          <a-list-item v-for="idx in data">
+            <FixCard :id="idx.valueOf()"></FixCard>
           </a-list-item>
         </a-list>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="10" :offset="7">
-        <el-pagination :page-size="10" background layout="prev, pager, next, jumper" :total="1000" />
+        <el-pagination :page-size="10" background layout="prev, pager, next, jumper" :total="count" @change="(currentPage) => {
+          handleFetchfixback(currentPage);
+        }" />
       </el-col>
     </el-row>
     <el-row>
@@ -34,6 +36,44 @@
 
 <script lang="ts" setup>
 import FixCard from '../components/FixCard.vue'
+import { onMounted, ref } from 'vue';
+
+const count = ref(0);
+
+onMounted(() => {
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:6521/api/fix/count", requestOptions)
+    .then(response => response.text())
+    .then(result => count.value = JSON.parse(result).data)
+    .catch(error => console.log('error', error));
+  handleFetchfixback(1);
+});
+
+const data = ref<number[]>([]);
+
+const handleFetchfixback = (page: number) => {
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:6521/api/fix/id/list?page=" + page, requestOptions)
+    .then(response => response.text())
+    .then(result => data.value = JSON.parse(result).data)
+    .catch(error => console.log('error', error));
+}
 </script>
 
 <style scoped></style>

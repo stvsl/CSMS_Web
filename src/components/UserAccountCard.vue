@@ -1,4 +1,3 @@
-import { ElMessage } from 'element-plus';
 <template>
   <a-list-item class="list-demo-item" action-layout="vertical">
     <template #extra>
@@ -12,22 +11,21 @@ import { ElMessage } from 'element-plus';
             <template #icon>
               <icon-edit />
             </template>修改身份信息</a-button>
-          <a-popconfirm content="确认注销此用户账户吗？" type="error">
+          <a-popconfirm content="确认注销此用户账户吗？" type="error" @ok="handleDelete">
             <a-button status="danger" size="small">
               <template #icon>
                 <icon-delete />
               </template>注销</a-button>
           </a-popconfirm>
-
         </a-space>
       </div>
     </template>
-    <a-list-item-meta v-on:click="ElMessage.info('TODO');" title="用户XXXXXX"
-      description="姓名: XXXXXX &nbsp;&nbsp;&nbsp; tel: 176XXXXXXXX">
+    <a-list-item-meta :title="'用户' + account.UID" :description="'姓名: ' + account.Name + '  tel: ' + account.Tel">
       <template #avatar>
         <a-avatar shape="square">
           <img alt="avatar"
-            src="https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp" />
+            :src="account.Avator == '' ?
+              'https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp' : account.Avator" />
         </a-avatar>
       </template>
     </a-list-item-meta>
@@ -44,11 +42,20 @@ import { ElMessage } from 'element-plus';
   </a-modal>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ElMessage } from 'element-plus';
-import { reactive, ref } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+
 const router = useRouter();
+
+const props = defineProps({
+  id: {
+    type: String,
+    required: true
+  }
+});
+
 const visible = ref(false);
 const form = reactive({
   passwd: '',
@@ -59,7 +66,7 @@ const handleChangeInfo = () => {
   router.push({
     name: 'adminidinfo',
     params: {
-      id: '123'
+      id: props.id
     }
   });
 };
@@ -84,13 +91,101 @@ const handleBeforeOk = (done) => {
     ElMessage.error('两次输入密码不一致');
     return false;
   }
-  window.setTimeout(() => {
-    done()
-    // TODO; 提交表单
-  }, 3000)
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+  myHeaders.append("Content-Type", "application/json");
+
+  var raw = JSON.stringify({
+    "id": props.id,
+    "passwd": form.passwd
+  });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:6521/api/account/update/passwd", requestOptions)
+    .then(response => response.text())
+    .then(result => {
+      if (JSON.parse(result).code == 200) {
+        ElMessage.success('修改成功');
+      }
+    })
+    .catch(error => ElMessage.warning('error', error));
+  done()
 };
+
 const handleCancel = () => {
   visible.value = false;
+}
+
+interface Account {
+  Avator: string;
+  Company: string;
+  IDcard: string;
+  Location: string;
+  Name: string;
+  Passwd: string;
+  Sex: number;
+  Tel: string;
+  Type: number;
+  UID: number;
+};
+
+const account = ref<Account>({
+  Avator: '',
+  Company: '',
+  IDcard: '',
+  Location: '',
+  Name: '',
+  Passwd: '',
+  Sex: 0,
+  Tel: '',
+  Type: 0,
+  UID: 0,
+});
+
+onMounted(() => {
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+  myHeaders.append("Content-Type", "application/json");
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:6521/api/account/detail?id=" + props.id, requestOptions)
+    .then(response => response.text())
+    .then(result => {
+      account.value = JSON.parse(result).data;
+    })
+    .catch(error => ElMessage.error('error', error));
+})
+
+const handleDelete = () => {
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:6521/api/account/delete?id=" + props.id, requestOptions)
+    .then(response => response.text())
+    .then(result => {
+      if (JSON.parse(result).code == 200) {
+        ElMessage.success("删除成功")
+        router.go(0)
+      }
+    })
+    .catch(error => ElMessage.error('error', error));
 }
 </script>
 

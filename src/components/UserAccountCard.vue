@@ -3,20 +3,24 @@
     <template #extra>
       <div class="edit-area">
         <a-space direction="horizontal" align="center">
-          <a-button status="warning" size="small" @click="handleChangePasswd">
+          <a-button v-if="!props.mode" status="warning" size="small" @click="handleChangePasswd">
             <template #icon>
               <icon-lock />
             </template>修改密码</a-button>
-          <a-button status="warning" size="small" @click="handleChangeInfo">
+          <a-button v-if="!props.mode" status="warning" size="small" @click="handleChangeInfo">
             <template #icon>
               <icon-edit />
             </template>修改身份信息</a-button>
-          <a-popconfirm content="确认注销此用户账户吗？" type="error" @ok="handleDelete">
+          <a-popconfirm v-if="!props.mode" content="确认注销此用户账户吗？" type="error" @ok="handleDelete">
             <a-button status="danger" size="small">
               <template #icon>
                 <icon-delete />
               </template>注销</a-button>
           </a-popconfirm>
+          <a-button status="warning" size="small" @click="upvisible = true">
+            <template #icon>
+              <icon-reset />
+            </template>提升到第三方用户</a-button>
         </a-space>
       </div>
     </template>
@@ -30,7 +34,7 @@
       </template>
     </a-list-item-meta>
   </a-list-item>
-  <a-modal v-model:visible="visible" title="Modal Form" @cancel="handleCancel" @before-ok="handleBeforeOk">
+  <a-modal v-model:visible="visible" title="密码修改" @cancel="handleCancel" @before-ok="handleBeforeOk">
     <a-form :model="form">
       <a-form-item field="passwd1" label="请输入新密码">
         <a-input v-model="form.passwd" />
@@ -40,6 +44,9 @@
       </a-form-item>
     </a-form>
   </a-modal>
+  <a-modal v-model:visible="upvisible" title="公司信息填入" @cancel="upvisible = false" @before-ok="handleRight">
+    <a-input v-model="company" placeholder="请输入公司信息" />
+  </a-modal>
 </template>
 
 <script lang="ts" setup>
@@ -48,11 +55,17 @@ import { reactive, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-
+const upvisible = ref(false);
+const company = ref('');
 const props = defineProps({
   id: {
     type: String,
     required: true
+  },
+  mode: {
+    type: Boolean,
+    required: false,
+    default: false
   }
 });
 
@@ -187,6 +200,31 @@ const handleDelete = () => {
     })
     .catch(error => ElMessage.error('error', error));
 }
+
+const handleRight = () => {
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:6521/api/account/3rd/register?id=" + props.id + "&company=" + company.value, requestOptions)
+    .then(response => response.text())
+    .then(result => {
+      if (JSON.parse(result).code == 200) {
+        ElMessage.success("账户升级成功");
+        setTimeout(() => {
+          router.go(0);
+        }, 1000);
+      } else {
+        ElMessage.error("账户升级失败");
+      }
+    })
+    .catch(error => ElMessage.error('error', error));
+};
 </script>
 
 <style scoped>

@@ -69,12 +69,15 @@
                     style="width: 100%;height: 100px" />
             </a-form-item>
             <a-form-item v-else field="id" label="指定委派人">
-                <a-select v-model="form.post">
-                    <a-option value="post1">Post1</a-option>
-                    <a-option value="post2">Post2</a-option>
-                    <a-option value="post3">Post3</a-option>
-                    <a-option value="post4">Post4</a-option>
-                </a-select>
+                <el-select v-model="form.post" filterable remote reserve-keyword placeholder="请输入委派人OID"
+                    :remote-method="remoteMethod" :loading="loading" style="width: 240px">
+                    <el-option v-for="item in options" :label="item" :value="item" />
+                    <template #loading>
+                        <svg class="circular" viewBox="0 0 50 50">
+                            <circle class="path" cx="25" cy="25" r="20" fill="none" />
+                        </svg>
+                    </template>
+                </el-select>
             </a-form-item>
         </a-form>
     </a-modal>
@@ -92,10 +95,38 @@ const props = defineProps({
     }
 });
 
+const options = ref<Number[]>([])
+
+const loading = ref(false);
+
+const remoteMethod = (query: string) => {
+    loading.value = true;
+    var myHeaders = new Headers();
+    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+    var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:6521/api/account/3rd/id/fetchlist?key=" + query, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            if (JSON.parse(result).code == 200) {
+                options.value = JSON.parse(result).data;
+                setTimeout(() => {
+                    loading.value = false;
+                }, 500);
+            }
+        })
+        .catch(error => ElMessage.error('error', error));
+}
+
 const visible = ref(false);
 const form = reactive({
     name: '',
-    id: ''
+    post: ''
 });
 
 interface fix {
@@ -177,7 +208,7 @@ const handleBeforeOk = (done) => {
             body: JSON.stringify({
                 "mode": processPanelStatus.value,
                 "name": form.name,
-                "id": form.id
+                "id": form.post
             })
         };
 
@@ -255,3 +286,89 @@ const handleStatusUpdate = (status: number) => {
         .catch(error => ElMessage.error('error', error));
 }
 </script>
+
+<style scoped>
+.demo-basic {
+    padding: 10px;
+    width: 300px;
+    background-color: var(--color-bg-popup);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.15);
+}
+
+.circular {
+    display: inline;
+    height: 30px;
+    width: 30px;
+    animation: loading-rotate 2s linear infinite;
+}
+
+.path {
+    animation: loading-dash 1.5s ease-in-out infinite;
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: 0;
+    stroke-width: 2;
+    stroke: var(--el-color-primary);
+    stroke-linecap: round;
+}
+
+.loading-path .dot1 {
+    transform: translate(3.75px, 3.75px);
+    fill: var(--el-color-primary);
+    animation: custom-spin-move 1s infinite linear alternate;
+    opacity: 0.3;
+}
+
+.loading-path .dot2 {
+    transform: translate(calc(100% - 3.75px), 3.75px);
+    fill: var(--el-color-primary);
+    animation: custom-spin-move 1s infinite linear alternate;
+    opacity: 0.3;
+    animation-delay: 0.4s;
+}
+
+.loading-path .dot3 {
+    transform: translate(3.75px, calc(100% - 3.75px));
+    fill: var(--el-color-primary);
+    animation: custom-spin-move 1s infinite linear alternate;
+    opacity: 0.3;
+    animation-delay: 1.2s;
+}
+
+.loading-path .dot4 {
+    transform: translate(calc(100% - 3.75px), calc(100% - 3.75px));
+    fill: var(--el-color-primary);
+    animation: custom-spin-move 1s infinite linear alternate;
+    opacity: 0.3;
+    animation-delay: 0.8s;
+}
+
+@keyframes loading-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes loading-dash {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
+
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -40px;
+    }
+
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -120px;
+    }
+}
+
+@keyframes custom-spin-move {
+    to {
+        opacity: 1;
+    }
+}
+</style>

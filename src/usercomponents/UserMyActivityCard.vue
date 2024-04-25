@@ -50,7 +50,7 @@ const pushToActivity = () => {
   router.push({
     name: 'activity',
     params: {
-      id: '1',
+      id: props.id,
     },
   });
 }

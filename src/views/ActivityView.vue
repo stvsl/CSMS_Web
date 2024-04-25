@@ -20,7 +20,8 @@
                         <UserFilled />
                     </el-icon>
                     <span>{{ active.Maxcount }}</span>&nbsp;&nbsp;
-                    <el-button type="success" size="small">参加此活动</el-button>
+                    <el-button v-if="!hasjoin" type="success" size="small" @click="handleJoin">参加此活动</el-button>
+                    <el-button v-else type="success" size="small" disabled>您已参加此活动</el-button>
                 </p>
                 <p>
                     <el-icon>
@@ -40,6 +41,9 @@
 import { View, UserFilled } from '@element-plus/icons-vue'
 import { useRouter } from "vue-router";
 import { ref, onMounted } from "vue";
+import useUserStore from '../stores/modules/user';
+import { ElMessage } from 'element-plus';
+const user = useUserStore();
 const router = useRouter();
 const id = ref(router.currentRoute.value.params.id);
 
@@ -80,6 +84,8 @@ const active = ref<Active>({
     Position: 'loading...'
 });
 
+const hasjoin = ref(false);
+
 onMounted(() => {
     var myHeaders = new Headers();
     myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
@@ -97,7 +103,41 @@ onMounted(() => {
             count.value = JSON.parse(result).count;
         })
         .catch(error => console.log('error', error));
+
+    var myHeaders = new Headers();
+    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:6521/api/activity/hasjoin?id=" + user.ID + "&acid=" + id.value, requestOptions)
+        .then(response => response.text())
+        .then(result => hasjoin.value = JSON.parse(result).data)
+        .catch(error => ElMessage.error('error', error));
 })
+
+const handleJoin = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:6521/api/activity/join?id=" + user.ID + "&acid=" + id.value, requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            ElMessage.success("参与成功")
+            router.go(0)
+        })
+        .catch(error => ElMessage.error('error', error));
+}
+
 </script>
 
 <style scoped></style>

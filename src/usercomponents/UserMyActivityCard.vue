@@ -29,9 +29,9 @@
         <el-button type="warning" :icon="CloseBold" @click="handleExitActivity">退出活动</el-button>
       </div>
     </template>
-    <a-list-item-meta title="活动标题" description="v关于军方击毙iui哦i和口语胡一负于覅u关于工艺i覅与i故意犯规与开发有">
+    <a-list-item-meta :description="active.Detail">
       <template #title>
-        <a-typography-text strong>大师的dffgsfsd</a-typography-text>
+        <a-typography-text strong>{{ active.Name }}</a-typography-text>
       </template>
     </a-list-item-meta>
   </a-list-item>

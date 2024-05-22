@@ -102,7 +102,7 @@ onMounted(() => {
 })
 
 const toolbarConfig = {
-    excludeKeys: ['insertVideo'],
+    excludeKeys: ['uploadVideo'],
 }
 const editorConfig = {                       // JS 语法
     MENU_CONF: {},
@@ -127,6 +127,7 @@ const handleCreated = (editor) => {
 
 const submitForm = () => {
     vFormRef.value.getFormData().then(formData => {
+        alert(JSON.stringify(formData))
         // Form Validation OK
         var raw = JSON.stringify({
             'acid': Number(acid.value),

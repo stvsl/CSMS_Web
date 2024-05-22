@@ -17,12 +17,14 @@
                             </template>
                             <a-row>
                                 <a-col :flex="1">
-                                    <a-statistic title="文章总数" :value="50" :value-from="0" :start="true" animation>
+                                    <a-statistic title="文章总数" :value="arcticleancouncOverviewData.articleCount"
+                                        :value-from="0" :start="true" animation>
                                         <template #suffix>篇</template>
                                     </a-statistic>
                                 </a-col>
                                 <a-col :flex="1">
-                                    <a-statistic title="已发布" :value="30" :value-from="0" :start="true" animation>
+                                    <a-statistic title="已发布" :value="arcticleancouncOverviewData.articlePublish"
+                                        :value-from="0" :start="true" animation>
                                         <template #suffix>篇</template>
                                     </a-statistic>
                                 </a-col>
@@ -30,12 +32,14 @@
                             <br />
                             <a-row>
                                 <a-col :flex="1">
-                                    <a-statistic title="公告总数" :value="50" :value-from="0" :start="true" animation>
+                                    <a-statistic title="公告总数" :value="arcticleancouncOverviewData.anounceCount"
+                                        :value-from="0" :start="true" animation>
                                         <template #suffix>篇</template>
                                     </a-statistic>
                                 </a-col>
                                 <a-col :flex="1">
-                                    <a-statistic title="已发布" :value="30" :value-from="0" :start="true" animation>
+                                    <a-statistic title="已发布" :value="arcticleancouncOverviewData.anouncePublish"
+                                        :value-from="0" :start="true" animation>
                                         <template #suffix>篇</template>
                                     </a-statistic>
                                 </a-col>
@@ -51,17 +55,20 @@
                             </template>
                             <a-row>
                                 <a-col :flex="1">
-                                    <a-statistic title="活动总数" :value="50" :value-from="0" :start="true" animation>
+                                    <a-statistic title="活动总数" :value="activeoverviewdata.count" :value-from="0"
+                                        :start="true" animation>
                                         <template #suffix>个</template>
                                     </a-statistic>
                                 </a-col>
                                 <a-col :flex="1">
-                                    <a-statistic title="已结束" :value="30" :value-from="0" :start="true" animation>
+                                    <a-statistic title="已结束" :value="activeoverviewdata.hasEnd" :value-from="0"
+                                        :start="true" animation>
                                         <template #suffix>个</template>
                                     </a-statistic>
                                 </a-col>
                                 <a-col :flex="1">
-                                    <a-statistic title="进行中" :value="50" :value-from="0" :start="true" animation>
+                                    <a-statistic title="进行中" :value="activeoverviewdata.inprocess" :value-from="0"
+                                        :start="true" animation>
                                         <template #suffix>个</template>
                                     </a-statistic>
                                 </a-col>
@@ -79,18 +86,19 @@
                     </template>
                     <a-row>
                         <a-col :flex="1">
-                            <a-statistic title="反馈总数" :value="125670" show-group-separator :value-from="0" :start="true"
-                                animation>
+                            <a-statistic title="反馈总数" :value="feedoverviewdata.TotalFeedbacks" show-group-separator
+                                :value-from="0" :start="true" animation>
                             </a-statistic>
                         </a-col>
                         <a-col :flex="1">
-                            <a-statistic title="累计已处理" :value="5012" :value-from="0" :start="true" animation
-                                :value-style="{ color: '#0fbf60' }">
+                            <a-statistic title="累计已处理" :value="feedoverviewdata.TotalProcessed" :value-from="0"
+                                :start="true" animation :value-style="{ color: '#0fbf60' }">
                             </a-statistic>
                         </a-col>
                         <a-col :flex="1">
-                            <a-statistic title="未处理" :value="5010" :value-from="0" :start="true" animation
-                                :value-style="{ color: '#f5222d' }">
+                            <a-statistic title="未处理"
+                                :value="feedoverviewdata.TotalFeedbacks - feedoverviewdata.TotalProcessed"
+                                :value-from="0" :start="true" animation :value-style="{ color: '#f5222d' }">
                             </a-statistic>
                         </a-col>
                     </a-row>
@@ -103,18 +111,19 @@
                     </template>
                     <a-row>
                         <a-col :flex="1">
-                            <a-statistic title="报修总数" :value="125670" show-group-separator :value-from="0" :start="true"
-                                animation>
+                            <a-statistic title="报修总数" :value="fixoverviewdata.TotalFeedbacks" show-group-separator
+                                :value-from="0" :start="true" animation>
                             </a-statistic>
                         </a-col>
                         <a-col :flex="1">
-                            <a-statistic title="累计已处理" :value="5012" :value-from="0" :start="true" animation
-                                :value-style="{ color: '#0fbf60' }">
+                            <a-statistic title="累计已处理" :value="fixoverviewdata.TotalProcessed" :value-from="0"
+                                :start="true" animation :value-style="{ color: '#0fbf60' }">
                             </a-statistic>
                         </a-col>
                         <a-col :flex="1">
-                            <a-statistic title="未处理" :value="5010" :value-from="0" :start="true" animation
-                                :value-style="{ color: '#f5222d' }">
+                            <a-statistic title="未处理"
+                                :value="fixoverviewdata.TotalFeedbacks - fixoverviewdata.TotalProcessed" :value-from="0"
+                                :start="true" animation :value-style="{ color: '#f5222d' }">
                             </a-statistic>
                         </a-col>
                     </a-row>
@@ -127,13 +136,13 @@
                     </template>
                     <a-row>
                         <a-col :flex="1">
-                            <a-statistic title="已注册" :value="1212" show-group-separator :value-from="0" :start="true"
-                                animation>
+                            <a-statistic title="已注册" :value="accountOverviewData.hasRegisterd" show-group-separator
+                                :value-from="0" :start="true" animation>
                             </a-statistic>
                         </a-col>
                         <a-col :flex="1">
-                            <a-statistic title="第三方账户数" :value="121" show-group-separator :value-from="0" :start="true"
-                                animation>
+                            <a-statistic title="第三方账户数" :value="accountOverviewData.otherUserCount" show-group-separator
+                                :value-from="0" :start="true" animation>
                             </a-statistic>
                         </a-col>
                     </a-row>
@@ -173,7 +182,7 @@
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
 import { Edit, Promotion, Avatar, Switch } from '@element-plus/icons-vue'
-import { ref } from "vue";
+import { ref, onBeforeMount } from "vue";
 import { use } from "echarts/core";
 import { RadarChart } from "echarts/charts";
 import { TitleComponent, LegendComponent } from "echarts/components";
@@ -184,6 +193,7 @@ import type {
     TitleComponentOption,
     LegendComponentOption
 } from "echarts/components";
+import { ElMessage } from 'element-plus';
 
 const router = useRouter();
 
@@ -246,6 +256,124 @@ const option = ref({
         }
     ]
 } as EChartsOption);
+
+interface FeedOverviewData {
+    CompletionRate: number;
+    InProgress: number;
+    TotalFeedbacks: number;
+    TotalPending: number;
+    TotalProcessed: number;
+    TotalRepairs: number;
+}
+
+interface FixOverviewData {
+    CompletionRate: number;
+    InProgress: number;
+    TotalFeedbacks: number;
+    TotalPending: number;
+    TotalProcessed: number;
+    TotalRepairs: number;
+}
+
+interface ActiveOverviewData {
+    count: number;
+    hasEnd: number;
+    inprocess: number;
+}
+
+interface ArctileAncouncOverviewData {
+    anounceCount: number;
+    anouncePublish: number;
+    articleCount: number;
+    articlePublish: number;
+}
+
+interface AccountOverviewData {
+    hasRegisterd: number;
+    otherUserCount: number;
+}
+
+const feedoverviewdata = ref<FeedOverviewData>({
+    CompletionRate: 0,
+    InProgress: 0,
+    TotalFeedbacks: 0,
+    TotalPending: 0,
+    TotalProcessed: 0,
+    TotalRepairs: 0
+} as FeedOverviewData);
+
+const fixoverviewdata = ref<FixOverviewData>({
+    CompletionRate: 0,
+    InProgress: 0,
+    TotalFeedbacks: 0,
+    TotalPending: 0,
+    TotalProcessed: 0,
+    TotalRepairs: 0
+} as FixOverviewData);
+
+const activeoverviewdata = ref<ActiveOverviewData>({
+    count: 0,
+    hasEnd: 0,
+    inprocess: 0
+} as ActiveOverviewData);
+
+const arcticleancouncOverviewData = ref<ArctileAncouncOverviewData>({
+    anounceCount: 0,
+    anouncePublish: 0,
+    articleCount: 0,
+    articlePublish: 0
+} as ArctileAncouncOverviewData);
+
+const accountOverviewData = ref<AccountOverviewData>({
+    hasRegisterd: 0,
+    otherUserCount: 0
+} as AccountOverviewData)
+
+onBeforeMount(() => {
+    var myHeaders = new Headers();
+    myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+    var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("http://127.0.0.1:6521/api/feed/admin/overview", requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            feedoverviewdata.value = JSON.parse(result).data
+        })
+        .catch(error => ElMessage.error('error', error));
+
+    fetch("http://127.0.0.1:6521/api/fix/admin/overview", requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            fixoverviewdata.value = JSON.parse(result).data
+        })
+        .catch(error => ElMessage.error('error', error));
+
+    fetch("http://127.0.0.1:6521/api/activity/admin/overview", requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            activeoverviewdata.value = JSON.parse(result).data
+        })
+        .catch(error => ElMessage.error('error', error));
+    fetch("http://127.0.0.1:6521/api/articleanounce/admin/overview", requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            arcticleancouncOverviewData.value = JSON.parse(result).data
+        })
+        .catch(error => ElMessage.error('error', error));
+    fetch("http://127.0.0.1:6521/api/account/admin/overview", requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            accountOverviewData.value = JSON.parse(result).data
+        })
+        .catch(error => ElMessage.error('error', error));
+});
+
+
 </script>
 <style>
 .el-row {

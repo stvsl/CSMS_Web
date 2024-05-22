@@ -60,7 +60,7 @@ onMounted(() => {
 })
 
 const toolbarConfig = {
-    excludeKeys: ['insertVideo'],
+    excludeKeys: ['uploadVideo'],
 }
 const editorConfig = {                       // JS 语法
     MENU_CONF: {},

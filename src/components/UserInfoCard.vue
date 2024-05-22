@@ -102,7 +102,7 @@ const handleCalcProgress = (account: Account) => {
     if (account.IDcard == "") {
         count = count + 1;
     }
-    if (account.Company == "") {
+    if (account.Sex == 3) {
         count = count + 1;
     }
     if (account.Location == "") {

@@ -16,9 +16,9 @@ const userStore = useUserStore();
 
 onMounted(() => {
   if (userStore.loginStatus() == 1) {
+    fetchLastLoginTime();
   } else if (userStore.loginStatus() == 2) {
   } else {
-
   }
 })
 
@@ -56,6 +56,22 @@ watch(() => route.path, (newPath) => {
     }
   }
 });
+
+const fetchLastLoginTime = () => {
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:6521/api/user/fetchlastlogintime?id=" + userStore.ID, requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+}
 </script>
 
 <template>

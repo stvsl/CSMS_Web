@@ -127,8 +127,6 @@ const handleCreated = (editor) => {
 
 const submitForm = () => {
     vFormRef.value.getFormData().then(formData => {
-        alert(JSON.stringify(formData))
-        // Form Validation OK
         var raw = JSON.stringify({
             'acid': Number(acid.value),
             'data': formData, 'content': valueHtml.value

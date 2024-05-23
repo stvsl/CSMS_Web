@@ -34,14 +34,14 @@
           </a-input-group>
         </el-col>
       </el-row>
-      <el-row v-if="false">
+      <el-row>
         <el-col :offset="1" :span="6">
           <a-input-group style="margin-left: 20px">
             <h2 :style="{ width: '200px' }">其它管理员账户信息:</h2>
           </a-input-group>
         </el-col>
       </el-row>
-      <el-row v-if="false">
+      <el-row>
         <el-col :offset="2" :span="18">
           <a-table :data="data">
             <template #columns>
@@ -89,7 +89,7 @@
 
 <script lang="ts" setup>
 
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import useUserStore from '../stores/modules/user';
 import { ElMessage } from 'element-plus';
 const userStore = useUserStore();
@@ -168,6 +168,24 @@ const handleInfo = () => {
     })
     .catch(error => console.log('error', error));
 };
+const count = ref(0);
+onMounted(() => {
+  var myHeaders = new Headers();
+  myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  fetch("http://127.0.0.1:6521/api/user/count", requestOptions)
+    .then(response => response.text())
+    .then(result => {
+      count.value = JSON.parse(result).data - 1;
+    })
+    .catch(error => console.log('error', error));
+});
 
 </script>
 

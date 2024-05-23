@@ -14,7 +14,7 @@
     </el-row>
     <el-row>
       <el-col :offset="1" :span="6">
-        <a-input-group v-if="false" style="margin-left:   20px">
+        <a-input-group style="margin-left:   20px">
           <h2 :style="{ width: '60px' }">查找:</h2>
           <a-select :options="['名称', 'UID', '联系电话']" :style="{ width: '120px' }" placeholder="请选择搜索类型" />&nbsp;
           <a-input :style="{ width: '300px' }" placeholder="键入以开始搜索" /> &nbsp;

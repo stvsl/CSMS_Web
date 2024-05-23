@@ -40,8 +40,8 @@
         <a-card title="维修事件">
           <template #extra>
             <el-col :span="4">
-              <el-pagination :page-size="4" background layout="prev, pager, next, jumper" :total="count" @change="(currentPage) => {
-                page.value = currentPage;
+              <el-pagination :page-size="5" background layout="prev, pager, next, jumper" :total="count" @change="(currentPage) => {
+                page = currentPage;
                 handleFetchFix();
               }" />
             </el-col>
@@ -174,7 +174,7 @@ interface OverData {
   TotalRepairs: number;
 }
 
-const overdata = ref < OverData > ({});
+const overdata = ref<OverData>({});
 onMounted(() => {
   var myHeaders = new Headers();
   myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
@@ -196,7 +196,7 @@ onMounted(() => {
     .catch(error => console.log('error', error));
 });
 
-const datas = ref < number[] > ([])
+const datas = ref<number[]>([])
 
 const handleFetchFix = () => {
   var myHeaders = new Headers();

@@ -19,7 +19,6 @@
           </a-popconfirm>
           <a-button status="warning" size="small" @click="upvisible = true">
             <template #icon>
-              <icon-reset />
             </template>提升到第三方用户</a-button>
         </a-space>
       </div>

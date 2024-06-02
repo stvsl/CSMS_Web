@@ -131,6 +131,7 @@ const submitForm = () => {
             'acid': Number(acid.value),
             'data': formData, 'content': valueHtml.value
         });
+        console.log(raw);
         var myHeaders = new Headers();
         myHeaders.append("User-Agent", "Apifox/1.0.0 (https://apifox.com)");
         myHeaders.append("Content-Type", "application/json");

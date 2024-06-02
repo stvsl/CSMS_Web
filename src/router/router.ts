@@ -152,6 +152,16 @@ const routes = [
     name: "adminanounceedit",
     component: () => import("../views/AdminAnounceEdit.vue"),
   },
+  {
+    path: "/3rduser/work",
+    name: "3rduserwork",
+    component: () => import("../views/OtherUserWork.vue"),
+  },
+  {
+    path: "/search",
+    name: "searchview",
+    component: () => import("../views/UserSearchView.vue"),
+  },
 ];
 
 const router = createRouter({

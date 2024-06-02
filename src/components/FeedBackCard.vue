@@ -59,22 +59,11 @@
         @before-ok="handleBeforeOk">
         <a-form :model="form">
             <a-form-item>
-                <a-radio-group v-model="processPanelStatus" type="button">
-                    <a-radio :value="0" :default-checked="true">指定委派人</a-radio>
-                    <a-radio :value="1">手动填入相关处理信息</a-radio>
-                </a-radio-group>
+                <a-radio :value="1" default-checked>手动填入相关处理信息</a-radio>
             </a-form-item>
-            <a-form-item v-if="processPanelStatus === 1" field="name" label="相关信息">
+            <a-form-item field="name" label="相关信息">
                 <textarea v-model="form.name" :max-length="60" auto-size allow-clear
                     style="width: 100%;height: 100px" />
-            </a-form-item>
-            <a-form-item v-else field="id" label="指定委派人">
-                <a-select v-model="form.post">
-                    <a-option value="post1">Post1</a-option>
-                    <a-option value="post2">Post2</a-option>
-                    <a-option value="post3">Post3</a-option>
-                    <a-option value="post4">Post4</a-option>
-                </a-select>
             </a-form-item>
         </a-form>
     </a-modal>

@@ -8,7 +8,9 @@
           </router-link>
         </a-col>
         <a-col class="height100" :offset="4" :span="8">
-          <a-input-search :style="{ width: '100%' }" :size="isTop ? 'large' : 'medium'" placeholder="开始搜索吧！" />
+          <a-input-search @search="(value) => {
+            router.push(`/search?key=` + value);
+          }" :style="{ width: '100%' }" :size="isTop ? 'large' : 'medium'" placeholder="开始搜索吧！" />
         </a-col>
         <a-col class="btns height100" :span="4">
           <RouterLink class="button" to="/user/activity">活动</RouterLink>

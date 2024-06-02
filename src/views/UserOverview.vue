@@ -53,6 +53,15 @@
                                 }">
                                     维修中心
                                 </el-button>
+
+                            </a-space>
+                            <a-divider />
+                            <a-space :size="10">
+                                <el-button type="primary" :icon="EditPen" color="#aa4afa" round @click="() => {
+                                    router.push('/3rduser/work')
+                                }">
+                                    我的任务
+                                </el-button>
                             </a-space>
                         </a-card>
                     </a-col>
@@ -79,7 +88,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Edit, Promotion, Avatar } from '@element-plus/icons-vue';
+import { Edit, Promotion, Avatar, EditPen } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import UserArcicleCard from '../usercomponents/UserArcicleCard.vue';

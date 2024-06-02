@@ -9,7 +9,8 @@
                                 反馈时间：{{ formatDate(feed.Feedtime) }}
                             </span>
                             <span>
-                                更新时间：{{ formatDate(feed.Updatetime) }}
+                                更新时间：{{ formatDate(feed.Updatetime) == "1年01月01日08:05" ? "暂无" :
+                                formatDate(feed.Updatetime) }}
                             </span>
                         </a-space>
                     </a-col>
